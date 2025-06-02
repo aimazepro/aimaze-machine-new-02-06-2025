@@ -1,0 +1,285 @@
+{
+  "createdAt": "2025-04-20T13:04:45.582Z",
+  "updatedAt": "2025-04-20T13:13:54.715Z",
+  "id": "4j2sednvQLO9RkFb",
+  "name": "verifica_agendamento_usuario",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "summary"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -260,
+        0
+      ],
+      "id": "ee0cb360-3007-4580-be80-2c215caf0977",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "dcd908df-43bf-4847-828c-7f6aeb865ee8",
+              "leftValue": "={{ !!Object.keys($node[\"calendar \"].data).length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        180,
+        0
+      ],
+      "id": "6a6f48c5-66d1-4fc0-867e-13c8db831804",
+      "name": "If6"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9aefd0b5-d1ff-4d18-ada1-12162c5142d1",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "d7a3c4c8-5729-4ead-983c-9ffae19666d8",
+              "name": "htmlLink",
+              "value": "={{ $json.htmlLink }}",
+              "type": "string"
+            },
+            {
+              "id": "bb57fb9e-d810-4386-a8b1-51b1ebd28e13",
+              "name": "summary",
+              "value": "={{ $json.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "bb4b1f69-4eed-4e70-8f0b-3498b3ecda62",
+              "name": "description",
+              "value": "={{ $json.description }}",
+              "type": "string"
+            },
+            {
+              "id": "80427945-f73e-4654-ae2b-5a1d11e90784",
+              "name": "start",
+              "value": "={{ $json.start.dateTime }}",
+              "type": "string"
+            },
+            {
+              "id": "419d8b13-1e36-4c2e-b867-f61e95565ba5",
+              "name": "end",
+              "value": "={{ $json.end.dateTime }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        400,
+        100
+      ],
+      "id": "9d339b21-9f06-4061-b3d2-c882b91b9303",
+      "name": "Separa dados calendar6"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a0fd740f-358f-46b2-8bbc-4f3c25ebf135",
+              "name": "=evento",
+              "value": "=id: {{ $json.id }}, data_comeco: {{ $json.start }}, data_fim: {{ $json.end }}. Titulo: {{ $json.summary }}. descricao: {{ $json.description }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        620,
+        100
+      ],
+      "id": "3e20b7d7-e2cf-4dee-8af3-959a226088a9",
+      "name": "Edit Fields10"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n\"response\": \"verificacao: o usuário possui os seguintes eventos,{{ $json.evento }}.\"\n}\n ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        840,
+        100
+      ],
+      "id": "9cabc0b0-04a8-403d-b9c0-f0df874cf2dc",
+      "name": "output8"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "aimazemachine@gmail.com",
+          "mode": "list",
+          "cachedResultName": "aimazemachine@gmail.com"
+        },
+        "limit": 3,
+        "timeMax": "={{ $now.plus({ week: 4 }) }}",
+        "options": {
+          "query": "={{ $json.arguments.descricao }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        -40,
+        0
+      ],
+      "id": "85fba2b7-0d2c-4b06-b1ce-cdb43ea67de7",
+      "name": "calendar ",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "Eqt8e2WwupPypoIC",
+          "name": "[calendar.google.com] - aimazemachine@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n\"response\": \"verificacao: o usuário não possui nenhum evento agendado.\"\n}\n ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        840,
+        -120
+      ],
+      "id": "6370280c-733b-44b3-bfb5-784729fdc109",
+      "name": "output9"
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "calendar ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If6": {
+      "main": [
+        [
+          {
+            "node": "output9",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Separa dados calendar6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Separa dados calendar6": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields10": {
+      "main": [
+        [
+          {
+            "node": "output8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "calendar ": {
+      "main": [
+        [
+          {
+            "node": "If6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "all",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "start_datetime": "2025-04-22T08:00:00",
+          "end_datetime": "2025-04-22T19:00:00"
+        }
+      }
+    ]
+  },
+  "versionId": "ed516494-69c6-4987-a78b-09c396cf1d0c",
+  "triggerCount": 0,
+  "tags": []
+}
