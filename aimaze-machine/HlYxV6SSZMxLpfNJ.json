@@ -1,0 +1,222 @@
+{
+  "createdAt": "2025-05-31T13:56:19.122Z",
+  "updatedAt": "2025-05-31T14:10:24.931Z",
+  "id": "HlYxV6SSZMxLpfNJ",
+  "name": "My workflow 11",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "pixeomachine",
+        "options": {}
+      },
+      "id": "f39bd08e-c1f3-41df-bf3e-9c8b01f29bcb",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -140,
+        -100
+      ],
+      "webhookId": "f153c146-4aaa-4aec-b658-8e7da950ffa4"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.data.message.conversation }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        80,
+        -100
+      ],
+      "id": "1fcf5961-3eb1-4941-b631-385839d22ac5",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        120
+      ],
+      "id": "ba3ccc6a-a6c4-4919-be97-fa4d9ab7f707",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "HqyrCnwePmXKkfxw",
+          "name": "[main] - openia.com - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "aimaze",
+        "remoteJid": "5538999225622",
+        "messageText": "={{ $json.output }}",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        440,
+        -100
+      ],
+      "id": "e038b6f0-71d7-4eb2-87cf-0eda37939dfa",
+      "name": "Evolution API",
+      "credentials": {
+        "evolutionApi": {
+          "id": "9cBJRHiC9OlAfm34",
+          "name": "wsapi.aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 60
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        660,
+        -100
+      ],
+      "id": "534ba7a2-2f61-4e71-a9fd-f9773748d922",
+      "name": "Wait",
+      "webhookId": "d419f77e-850b-4501-b11e-7ced9cbb1d1a"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Evolution API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evolution API": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "all",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "webhooks.aimaze.com.br",
+            "user-agent": "axios/1.7.9",
+            "content-length": "961",
+            "accept-encoding": "gzip, compress, deflate, br",
+            "content-type": "application/json",
+            "x-forwarded-for": "178.156.151.68",
+            "x-forwarded-host": "webhooks.aimaze.com.br",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik_traefik.1",
+            "x-real-ip": "178.156.151.68"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "event": "messages.upsert",
+            "instance": "aimaze",
+            "data": {
+              "key": {
+                "remoteJid": "553899225622@s.whatsapp.net",
+                "fromMe": false,
+                "id": "3A939B38EE0483FED67B"
+              },
+              "pushName": "João Reis",
+              "status": "DELIVERY_ACK",
+              "message": {
+                "conversation": "Tudo bem ?",
+                "messageContextInfo": {
+                  "deviceListMetadata": {
+                    "senderKeyHash": "jb0MD/Ii+xeV5Q==",
+                    "senderTimestamp": "1745629647",
+                    "recipientKeyHash": "QiG8/u+WGGwllw==",
+                    "recipientTimestamp": "1747660746"
+                  },
+                  "deviceListMetadataVersion": 2,
+                  "messageSecret": "LFG90VbEQmGs2OHIkUabkNvufsWevAVb29bDNY7GSbc="
+                }
+              },
+              "messageType": "conversation",
+              "messageTimestamp": 1748700075,
+              "instanceId": "0d2743da-178c-41ea-a451-387c6dcd81b1",
+              "source": "ios",
+              "chatwootMessageId": 51145,
+              "chatwootInboxId": 6,
+              "chatwootConversationId": 113
+            },
+            "destination": "https://webhooks.aimaze.com.br/webhook/pixeomachine",
+            "date_time": "2025-05-31T11:01:15.898Z",
+            "sender": "553187712022@s.whatsapp.net",
+            "server_url": "https://wsapi.clindermy.aimaze.com.br",
+            "apikey": "C20C6E36A318-4F67-9204-89A641D4A789"
+          },
+          "webhookUrl": "https://webhooks.aimaze.com.br/webhook/pixeomachine",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "versionId": "ad207329-ff0b-44e8-bc36-77683fe8104d",
+  "triggerCount": 1,
+  "tags": []
+}
