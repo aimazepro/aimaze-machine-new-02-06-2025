@@ -1,0 +1,215 @@
+{
+  "createdAt": "2025-04-20T13:35:32.695Z",
+  "updatedAt": "2025-04-20T13:56:51.501Z",
+  "id": "BCRFTTUGeJAjIU92",
+  "name": "enviar_notificacao_atendimento",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "servico_cliente"
+            },
+            {
+              "name": "descricao"
+            },
+            {
+              "name": "horario_marcado"
+            },
+            {
+              "name": "fone_number"
+            },
+            {
+              "name": "link"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -260,
+        -40
+      ],
+      "id": "c703ff2c-55bf-4b74-a959-2b76de5cb3e2",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n\"response\": \"mensagem enviada com sucesso.\"\n}\n ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        620,
+        -40
+      ],
+      "id": "da154cc0-079d-4843-8430-43c1dd6a34cd",
+      "name": "output11"
+    },
+    {
+      "parameters": {
+        "databaseId": 168854,
+        "tableId": 418625,
+        "returnAll": true,
+        "additionalOptions": {
+          "filters": {
+            "fields": [
+              {
+                "field": 3210935,
+                "value": "={{ $json.arguments.phone_number }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        -40
+      ],
+      "id": "8dfd7bc9-c5b7-4341-9ddb-8ff5ef3aa7b1",
+      "name": "Baserow5",
+      "credentials": {
+        "baserowApi": {
+          "id": "jODihG7gncUc7khv",
+          "name": "[baserow.io] - tools@aimaze.com.br"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "databaseId": 168854,
+        "tableId": 418625,
+        "rowId": "={{ $json.id }}",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": 3994504,
+              "fieldValue": "true"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        180,
+        -40
+      ],
+      "id": "93939c8e-f5c5-40b5-a108-357c2208b661",
+      "name": "Baserow6",
+      "credentials": {
+        "baserowApi": {
+          "id": "jODihG7gncUc7khv",
+          "name": "[baserow.io] - tools@aimaze.com.br"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "aimaze",
+        "remoteJid": "=120363418674438624@g.us",
+        "messageText": "=Atendimento Agendado ✅\n--\n{{ $json.servico_cliente }}\n{{ $json.descricao }}\n\nlink:{{ $json.link }}\nnumero: {{ $json.fone_number }}",
+        "options_message": {
+          "delay": 1200,
+          "linkPreview": false
+        }
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        400,
+        -40
+      ],
+      "id": "cbe5f479-4194-44ba-8364-e945b9894c75",
+      "name": "Evolution API3",
+      "credentials": {
+        "evolutionApi": {
+          "id": "TgOTPEmUw6n2wmlf",
+          "name": "Evolution Clindermy"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Baserow5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baserow5": {
+      "main": [
+        [
+          {
+            "node": "Baserow6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baserow6": {
+      "main": [
+        [
+          {
+            "node": "Evolution API3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evolution API3": {
+      "main": [
+        [
+          {
+            "node": "output11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "all",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "servico_cliente": "Limpeza de pele <> João Reis",
+          "descricao": "📅 Dia 21-04-25 às 11h30min ⏰",
+          "horario_marcado": "true",
+          "fone_number": "553899225622",
+          "link": "https://wa.me/553899225622"
+        }
+      }
+    ]
+  },
+  "versionId": "ddf95851-23a2-4f25-9dfb-7ab01833d954",
+  "triggerCount": 0,
+  "tags": []
+}
