@@ -1,0 +1,1040 @@
+{
+  "createdAt": "2025-04-19T14:56:19.095Z",
+  "updatedAt": "2025-05-05T19:30:10.335Z",
+  "id": "H3TWJXy5FzQM2UEu",
+  "name": "INTERROMPE ATENDIMENTO DA IA",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e527fa77-d28a-40d7-968d-240244fad290",
+              "name": "user",
+              "value": "={{ $json.body.data.key.remoteJid }}",
+              "type": "string"
+            },
+            {
+              "id": "196178c7-428f-4659-a151-4e3e9a92abfe",
+              "name": "mensagem",
+              "value": "={{ $json.body.data.message.conversation }}",
+              "type": "string"
+            },
+            {
+              "id": "65caa246-e113-43f3-9262-94cd42af7c36",
+              "name": "message.event",
+              "value": "={{ $json.body.data.key.fromMe? 'outcoming' : 'incoming' }}",
+              "type": "string"
+            },
+            {
+              "id": "db64a615-c9aa-48f1-8802-89ccfcd0ddf4",
+              "name": "instance.name",
+              "value": "={{ $json.body.instance }}",
+              "type": "string"
+            },
+            {
+              "id": "b88e7b97-4f27-43f5-9a30-bb84b49e8c22",
+              "name": "instanceId",
+              "value": "={{ $json.body.data.instanceId }}",
+              "type": "string"
+            },
+            {
+              "id": "92228661-6530-48d5-8452-8b1b6f99068b",
+              "name": "senderName",
+              "value": "={{ $json.body.data.key.fromMe? 'Mensagem da empresa' : 'Mensagem usuário' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        -160
+      ],
+      "id": "2211beb1-85fe-445a-800b-a3626dd9db08",
+      "name": "Normalização"
+    },
+    {
+      "parameters": {
+        "operation": "set",
+        "key": "={{ $('Normalização').item.json.user }}_block",
+        "value": "true",
+        "expire": true,
+        "ttl": 900
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        700,
+        -620
+      ],
+      "id": "8a3ead35-423d-4f04-9672-186276ab9d73",
+      "name": "block IA",
+      "credentials": {
+        "redis": {
+          "id": "d4AxnEWEdF6ojBXg",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.event }}",
+                    "rightValue": "outcoming",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "0185e09f-7d53-4b94-ad47-bf4028b9f78f"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "outcoming"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d6dc8354-ab60-44ff-b8ee-84a44983e37b",
+                    "leftValue": "={{ $json.message.event }}",
+                    "rightValue": "incoming",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "incoming"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        460,
+        -160
+      ],
+      "id": "a482ba9d-1f6d-441e-8647-034c873f7d47",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "block",
+        "key": "={{ $('Normalização').item.json.user }}_block",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        680,
+        -60
+      ],
+      "id": "92cae0ff-b0df-4097-9ccf-01dfb6d68f9e",
+      "name": "block IA1",
+      "credentials": {
+        "redis": {
+          "id": "d4AxnEWEdF6ojBXg",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.block }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "empty",
+                      "singleValue": true
+                    },
+                    "id": "b6b6e3df-8385-4514-a462-c9f22d271436"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "IA PODE RESPONDER"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d985fdf5-0ede-4673-994d-734154600b3e",
+                    "leftValue": "={{ $json.block }}",
+                    "rightValue": "true",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "IA NÃO PODE RESPONDER"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        900,
+        -60
+      ],
+      "id": "ca6af25a-0380-4b40-aab7-45e823e970c8",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "amount": 25
+      },
+      "id": "c460aad9-579f-4822-936c-0bac99c1324f",
+      "name": "Wait3",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1360,
+        -720
+      ],
+      "webhookId": "4d9d34ff-6bce-4fc5-9134-6bbcbc85ec29"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "5aa7e097-878c-43d0-8093-dac1ced274a5",
+              "leftValue": "={{ $json.data[0].id }}",
+              "rightValue": "={{ $('Cria a mensagem').item.json.id }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "9b1e07bd-763e-43da-b878-7fe8d94f992c",
+      "name": "Verifica se o usuário mandou mais mensagens1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.1,
+      "position": [
+        1800,
+        -720
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "c7a159f4-2a63-4713-8273-99c91d625c43",
+      "name": "Se for mandado o fluxo  é encerrado1",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2020,
+        -580
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.openai.com/v1/threads/thread_IUsV5lfZVJRwtAR3qieo3Vxp/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "OpenAI-Beta",
+              "value": "assistants=v2"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4ab01d12-6138-4368-83e1-8071734baff4",
+      "name": "listar mensagens2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1580,
+        -720
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "HqyrCnwePmXKkfxw",
+          "name": "[main] - openia.com - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.openai.com/v1/threads/thread_IUsV5lfZVJRwtAR3qieo3Vxp/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "OpenAI-Beta",
+              "value": "assistants=v2"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "role",
+              "value": "user"
+            },
+            {
+              "name": "content",
+              "value": "=# informação do dia atual e os dias da semana.\nhoje: {{ $now.setZone('America/Sao_Paulo').toISO() }}\n---\n\n# Dados Mensagem\n\nEnviado pela empresa\nMensagem: {{ $json.mensagem }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2e0f9534-7d0e-4306-8dc1-02fd2a72002a",
+      "name": "Cria a mensagem",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1140,
+        -620
+      ],
+      "alwaysOutputData": false,
+      "credentials": {
+        "openAiApi": {
+          "id": "HqyrCnwePmXKkfxw",
+          "name": "[main] - openia.com - tools@aimaze.com.br"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.openai.com/v1/threads/thread_IUsV5lfZVJRwtAR3qieo3Vxp/runs",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "OpenAI-Beta",
+              "value": "assistants=v2"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b87f316d-4f0f-429b-9aed-796f5dcd0a4c",
+      "name": "listar mensagens3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1360,
+        -520
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "HqyrCnwePmXKkfxw",
+          "name": "[main] - openia.com - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.openai.com/v1/threads/{{ $('Possui Thread?').first().json.thread_id }}/runs/{{ $json.first_id }}/cancel",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "OpenAI-Beta",
+              "value": "assistants=v2"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3b9f853b-c029-4013-a428-857b45eceebf",
+      "name": "cancel run1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1580,
+        -520
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "HqyrCnwePmXKkfxw",
+          "name": "[main] - openia.com - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 25
+      },
+      "id": "54b59880-a570-4b6d-9b72-eae827e57ef8",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1760,
+        660
+      ],
+      "webhookId": "4d9d34ff-6bce-4fc5-9134-6bbcbc85ec29"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "5aa7e097-878c-43d0-8093-dac1ced274a5",
+              "leftValue": "={{ $json.data[0].id }}",
+              "rightValue": "={{ $('Cria a mensagem1').item.json.id }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "09dd620d-6b4c-4ae0-850f-ee87bb216ad6",
+      "name": "Verifica se o usuário mandou mais mensagens",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.1,
+      "position": [
+        2200,
+        660
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "5a282069-7412-4153-8b69-bf35fc226d18",
+      "name": "Se for mandado o fluxo  é encerrado",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2420,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.openai.com/v1/threads/thread_IUsV5lfZVJRwtAR3qieo3Vxp/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "OpenAI-Beta",
+              "value": "assistants=v2"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ec3c4838-2ade-4077-8759-9ce4e5df9add",
+      "name": "listar mensagens",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1980,
+        660
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "HqyrCnwePmXKkfxw",
+          "name": "[main] - openia.com - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.openai.com/v1/threads/thread_IUsV5lfZVJRwtAR3qieo3Vxp/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "OpenAI-Beta",
+              "value": "assistants=v2"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "role",
+              "value": "user"
+            },
+            {
+              "name": "content",
+              "value": "=# informação do dia atual e os dias da semana.\nhoje: {{ $now.setZone('America/Sao_Paulo').toISO() }}\n---\n\n# Dados Mensagem\n\nEnviado pela empresa\nMensagem: {{ $json.mensagem }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b59c6e70-a8fb-4f31-93dc-619b0bd50b23",
+      "name": "Cria a mensagem1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1540,
+        760
+      ],
+      "alwaysOutputData": false,
+      "credentials": {
+        "openAiApi": {
+          "id": "HqyrCnwePmXKkfxw",
+          "name": "[main] - openia.com - tools@aimaze.com.br"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.openai.com/v1/threads/thread_IUsV5lfZVJRwtAR3qieo3Vxp/runs",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "OpenAI-Beta",
+              "value": "assistants=v2"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7f9722c8-527c-450c-848f-7afdf3acf9fe",
+      "name": "listar mensagens4",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1760,
+        860
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "HqyrCnwePmXKkfxw",
+          "name": "[main] - openia.com - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.openai.com/v1/threads/{{ $('Possui Thread?').first().json.thread_id }}/runs/{{ $json.first_id }}/cancel",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "OpenAI-Beta",
+              "value": "assistants=v2"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ef291235-88ac-4076-a4e1-b1996b0c647d",
+      "name": "cancel run",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1980,
+        860
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "HqyrCnwePmXKkfxw",
+          "name": "[main] - openia.com - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6786c76e-8be4-4e4a-8dcd-28465a22641b",
+              "name": "response",
+              "value": "=# informação do dia atual e os dias da semana.\n\nhoje: {{ $now.setZone('America/Sao_Paulo').toISO() }}: {{ $now.setZone('America/Sao_Paulo').weekdayLong }}\n- {{ $now.plus(1, 'days').setZone('America/Sao_Paulo').toISODate() }}: {{ $now.plus(1, 'days').setZone('America/Sao_Paulo').weekdayLong }}\n- {{ $now.plus(2, 'days').setZone('America/Sao_Paulo').toISODate() }}: {{ $now.plus(2, 'days').setZone('America/Sao_Paulo').weekdayLong }}\n- {{ $now.plus(3, 'days').setZone('America/Sao_Paulo').toISODate() }}: {{ $now.plus(3, 'days').setZone('America/Sao_Paulo').weekdayLong }}\n- {{ $now.plus(4, 'days').setZone('America/Sao_Paulo').toISODate() }}: {{ $now.plus(4, 'days').setZone('America/Sao_Paulo').weekdayLong }}\n\n------------\n#dados do usuário\nNome do usuário: {{ $('Switch1').item.json.user_name }}\nTelefone: {{ $('Switch1').item.json.user_id }}\nMensagem do usuário: {{ $('Switch').item.json.mensagem }}{{ $('Merge5').item.json['FinalTranscripition'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        -160
+      ],
+      "id": "f6d97399-8a1a-4b47-bb3f-854aa29d2007",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "12f46d5b-38b7-49b3-bd49-be15b616706f",
+              "name": "response",
+              "value": "=# informação do dia atual e os dias da semana.\nhoje: {{ $now.setZone('America/Sao_Paulo').toISO() }}\n---\n\n# Dados Mensagem\n\n{{ $('Switch').item.json.senderName }}\nMensagem: {{ $('Normalização').item.json.mensagem }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        40
+      ],
+      "id": "2caf561a-ee70-4348-8073-db0ec031801b",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a032f7f0-f4db-447a-b634-80088cdb7282",
+              "name": "response",
+              "value": "=# informação do dia atual e os dias da semana.\nhoje: {{ $now.setZone('America/Sao_Paulo').toISO() }}\n---\n\n# Dados Mensagem\n\n{{ $('Switch').item.json.senderName }}\nMensagem: {{ $('Normalização').item.json.mensagem }}\n",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        920,
+        -620
+      ],
+      "id": "55743e76-5568-4f31-9fd4-32a3a30ae83e",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "pixeomachine",
+        "options": {}
+      },
+      "id": "7dca003a-46cf-430e-95d1-1cda748972a5",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        20,
+        -160
+      ],
+      "webhookId": "f153c146-4aaa-4aec-b658-8e7da950ffa4"
+    }
+  ],
+  "connections": {
+    "Normalização": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "block IA",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "block IA1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "block IA1": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "block IA": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait3": {
+      "main": [
+        [
+          {
+            "node": "listar mensagens2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verifica se o usuário mandou mais mensagens1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Se for mandado o fluxo  é encerrado1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "listar mensagens2": {
+      "main": [
+        [
+          {
+            "node": "Verifica se o usuário mandou mais mensagens1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cria a mensagem": {
+      "main": [
+        [
+          {
+            "node": "Wait3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "listar mensagens3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "listar mensagens3": {
+      "main": [
+        [
+          {
+            "node": "cancel run1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "listar mensagens",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verifica se o usuário mandou mais mensagens": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Se for mandado o fluxo  é encerrado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "listar mensagens": {
+      "main": [
+        [
+          {
+            "node": "Verifica se o usuário mandou mais mensagens",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cria a mensagem1": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "listar mensagens4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "listar mensagens4": {
+      "main": [
+        [
+          {
+            "node": "cancel run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        []
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        []
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Cria a mensagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Normalização",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "all",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "workflows.aimaze.com.br",
+            "user-agent": "axios/1.7.9",
+            "content-length": "880",
+            "accept-encoding": "gzip, compress, deflate, br",
+            "content-type": "application/json",
+            "x-forwarded-for": "178.156.151.68",
+            "x-forwarded-host": "workflows.aimaze.com.br",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik_traefik.1",
+            "x-real-ip": "178.156.151.68"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "event": "messages.upsert",
+            "instance": "aimaze",
+            "data": {
+              "key": {
+                "remoteJid": "553899225622@s.whatsapp.net",
+                "fromMe": false,
+                "id": "3AE4160A5E5276BF4E6C"
+              },
+              "pushName": "João Reis",
+              "status": "DELIVERY_ACK",
+              "message": {
+                "conversation": "ola",
+                "messageContextInfo": {
+                  "deviceListMetadata": {
+                    "senderKeyHash": "jb0MD/Ii+xeV5Q==",
+                    "senderTimestamp": "1745629647",
+                    "recipientKeyHash": "5aKSqcqaQPmxig==",
+                    "recipientTimestamp": "1744650225"
+                  },
+                  "deviceListMetadataVersion": 2,
+                  "messageSecret": "24cq3PFAWzo/RBiZXihVxKRr2dcZOoK6gr/6hFfREBk="
+                }
+              },
+              "messageType": "conversation",
+              "messageTimestamp": 1746372321,
+              "instanceId": "0d2743da-178c-41ea-a451-387c6dcd81b1",
+              "source": "ios"
+            },
+            "destination": "https://workflows.aimaze.com.br/webhook/pixeomachine",
+            "date_time": "2025-05-04T12:25:21.795Z",
+            "sender": "553187712022@s.whatsapp.net",
+            "server_url": "https://wsapi.clindermy.aimaze.com.br",
+            "apikey": "C20C6E36A318-4F67-9204-89A641D4A789"
+          },
+          "webhookUrl": "https://webhooks.aimaze.com.br/webhook/pixeomachine",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "versionId": "11ccfc40-2091-4e60-a0df-7151ef023cab",
+  "triggerCount": 1,
+  "tags": []
+}
