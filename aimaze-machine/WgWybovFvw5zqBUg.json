@@ -1,0 +1,308 @@
+{
+  "createdAt": "2025-05-24T21:23:03.946Z",
+  "updatedAt": "2025-05-28T14:21:14.901Z",
+  "id": "WgWybovFvw5zqBUg",
+  "name": "Aviso importante",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 11
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -300,
+        -100
+      ],
+      "id": "bf6d0a98-6a2f-497f-999c-d72c4cb6b9c6",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "sendTo": "joaoreiscefet@gmail.com",
+        "subject": "Aviso importante ! Confirme que está bem",
+        "message": "Confirme que está tudo bem para que eu nao deixem ninguém preocupado",
+        "options": {
+          "limitWaitTime": {
+            "values": {
+              "limitType": "atSpecifiedTime",
+              "maxDateAndTime": "2025-05-26T11:00:00"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        360,
+        -100
+      ],
+      "id": "7815d17f-2dc3-4e5d-bfea-acc0d9eb1d48",
+      "name": "Gmail",
+      "webhookId": "52c07b93-204a-40b8-9c98-33c949045d43",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "JXmfEF1VHoEAyonF",
+          "name": "[mail.google.com] - aimazemachine@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "df10804a-db1f-4398-b885-f199af7a5ce0",
+              "leftValue": "={{ $json.data.approved }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        580,
+        -100
+      ],
+      "id": "46bb33fb-a4c1-41c6-8500-4eed474ab438",
+      "name": "If"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        800,
+        -200
+      ],
+      "id": "125ed150-53b6-4f31-98af-d4170ce7fa1d",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7fdf7a22-c6fe-4dea-8560-15fc833b09ac",
+              "name": "contatos",
+              "value": "[553899191590,553899521700]",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -80,
+        -100
+      ],
+      "id": "2edbcc55-54f1-40f1-8793-2711c4bec6f8",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        800,
+        0
+      ],
+      "id": "da5c9624-efa9-40b2-857b-4661b9ebd3a0",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "contatos",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        140,
+        -100
+      ],
+      "id": "201f30ec-aa61-4d66-81b5-eda45a05d4aa",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://wsapi.aimaze.com.br/message/sendText/joaoreis",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "666B965966CD-46A2-9664-48871CE88469"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"number\": \"5538999225622\",\n  \"text\": \"🚨 AVISO AUTOMÁTICO! 🚨\\n\\nSe você está recebendo essa mensagem, quer dizer que eu não desativei a automação e posso estar com problemas. Por favor, me ligue imediatamente!\\n\\nSe estiver tudo bem, me desculpe kkkk… cabeça de pombo, né? Provavelmente esqueci de desativar, muito a minha cara hahaha.\\n\\nMAS, SE EU NÃO ESTIVER BEM, PRESTE MUITA ATENÇÃO:\\n\\n🐶🐱 A Berrynha e os gatos estão em BH e têm comida para no máximo 2 dias!\\nPor favor, vão buscá-los imediatamente. Não quero que meus gatos nem minha cachorrinha fiquem desamparados.\\n\\n📍 Endereço:\\nRua Jovina Gomes de Souza, 1048, Casa 33 – Letícia – Belo Horizonte/MG\\nCEP: 31570-050\\n\\n🔑 Se tiver qualquer problema para entrar na casa, saiba que ela é da Patrícia, da clínica Amevet.\\nChame ela imediatamente!\\nSe não conseguir, chame um chaveiro.\\n\\n🟨 Na rua tem um menino chamado Felipe, ele mora na casa amarela.\\nPeçam ajuda pra ele, que ele sabe como resolver.\",\n  \"options\": {\n    \"delay\": 1200\n  },\n  \"linkPreview\": false,\n  \"mentionsEveryone\": false,\n  \"mentioned\": [\n    \"5531999999999\"\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1020,
+        120
+      ],
+      "id": "719301ac-05be-407a-b9b2-aa58cb7f1aa3",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "amount": 20
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1220,
+        120
+      ],
+      "id": "c205f7fe-5eb0-4627-bf72-619398ecb59a",
+      "name": "Wait",
+      "webhookId": "02ae3c03-9332-44ac-8882-bb20822ccadd"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "5409f40f-b869-4002-81a5-b5b192570b59",
+  "triggerCount": 1,
+  "tags": []
+}
