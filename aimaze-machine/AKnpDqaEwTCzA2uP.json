@@ -1,0 +1,4943 @@
+{
+  "createdAt": "2025-04-14T22:33:00.816Z",
+  "updatedAt": "2025-04-14T22:33:09.706Z",
+  "id": "AKnpDqaEwTCzA2uP",
+  "name": "Automaster-master v0.2",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.openai.com/v1/threads/{{ $json.data[0].thread_id }}/runs/{{ $json.first_id }}/cancel",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "OpenAI-Beta",
+              "value": "assistants=v2"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4b0947bc-0a16-4a48-b459-e46096b48076",
+      "name": "Cancela a Run",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3960,
+        1400
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "HqyrCnwePmXKkfxw",
+          "name": "[main] - openia.com - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "e9f99497-32dd-448b-a4db-f8d1b19b0bc4",
+              "leftValue": "={{ !!Object.keys($node[\"Baserow - Get User\"].data).length }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "20d6a6cd-1ffc-49c3-9484-71b6045f5ee8",
+      "name": "Usuário Existe?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.1,
+      "position": [
+        -4740,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://evolution.pixeo.com.br/group/participants/pixeomkt",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "groupJid",
+              "value": "120363329938537038@g.us"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "8dcb88713769e3f1e202283bf1bea161"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6d0ad928-e315-4dcc-8df9-7e6d8ca3c0b0",
+      "name": "Busca participantes do grupo de teste",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4660,
+        1620
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "e15a77fd-888c-43a7-abd4-4faea493b13b",
+      "name": "Loop Over Items2",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -4440,
+        1620
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "8b1370e9-656d-4b67-b892-17eaab246e8e",
+              "leftValue": "=",
+              "rightValue": "=",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "00980a13-252f-43be-8800-f373b3601d26",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.1,
+      "position": [
+        -4200,
+        1640
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "databaseId": 168854,
+        "tableId": 418625,
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": 3210935,
+              "fieldValue": "={{ $('Webhook').item.json.body.data.key.remoteJid.split('@') [0]  }}"
+            },
+            {
+              "fieldId": 3210936,
+              "fieldValue": "={{ $('Webhook').item.json.body.data.pushName }}"
+            }
+          ]
+        }
+      },
+      "id": "70414832-3499-4c6a-a236-1b754961bedb",
+      "name": "Cria o usuário que nao foi encontrado no grupo",
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        -4460,
+        760
+      ],
+      "credentials": {
+        "baserowApi": {
+          "id": "jODihG7gncUc7khv",
+          "name": "[baserow.io] - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Esse nó, confere se o usuário está em algum grupo\n\n**Esse nó faz a verificação se o usuário está cadastrado em\nalgum grupo e se ele estiver ele adiciona no banco de\ndados no Baserow**\n",
+        "height": 540.5823932582209,
+        "width": 1044.9827482398446
+      },
+      "id": "eca35fe5-8851-423d-a9ed-014fd9437c4f",
+      "name": "Sticky Note10",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -4760,
+        1360
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/threads",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "OpenAI-Beta",
+              "value": "assistants=v2"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b8088b59-fc83-4e8f-b784-74cf918ae557",
+      "name": "Cria a thread",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3940,
+        840
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "HqyrCnwePmXKkfxw",
+          "name": "[main] - openia.com - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "databaseId": 168854,
+        "tableId": 418625,
+        "rowId": "={{ $('Possui Thread?').item.json.id }}",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": 3210932,
+              "fieldValue": "={{ $json.id }}"
+            }
+          ]
+        }
+      },
+      "id": "c9519b49-6195-4eae-a88e-10c8f9c37c10",
+      "name": "Adiciona Thread ao usuário",
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        -3940,
+        1060
+      ],
+      "credentials": {
+        "baserowApi": {
+          "id": "jODihG7gncUc7khv",
+          "name": "[baserow.io] - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Verifica e Cria a Thread \nVerifica primeiro se o usuário possui Thread\nSe ele não tive thread é criado a thread\nDepois é atualizado no banco de dados",
+        "height": 871.6710379321053,
+        "width": 299.38680557696205
+      },
+      "id": "cc360a7f-9ea1-4adb-bd83-4df0da1869ba",
+      "name": "Sticky Note11",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -4260,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5ae8cba9-3d8c-465b-b5b0-69493b7e4e91",
+              "name": "=base64",
+              "value": "={{ $('Webhook').item.json.body.data.message.base64 }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e80bb133-d397-4340-a90d-8a748de2e080",
+      "name": "Audio Base",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3300,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "=base64",
+        "options": {
+          "fileName": "audio.mp3",
+          "mimeType": "audio/mpeg"
+        }
+      },
+      "id": "febfb474-e1aa-4431-9dda-176862ecb7f8",
+      "name": "Convert to File6",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        -3120,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "99667d07-ff62-4627-9136-64622c85c979",
+              "name": "FinalTranscripition",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3242da74-0ba1-4a0a-8cfa-89858c3ae622",
+      "name": "Set Message from Audio3",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2780,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5ae8cba9-3d8c-465b-b5b0-69493b7e4e91",
+              "name": "=base64",
+              "value": "={{ $('Webhook').item.json.body.data.message.base64 }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "dded8d69-987f-45cb-9efa-67c306e4effc",
+      "name": "Image Base",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3280,
+        1380
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "base64",
+        "options": {
+          "fileName": "image.png",
+          "mimeType": "image/png"
+        }
+      },
+      "id": "74ad3a6e-6325-480d-835f-809c04e5ec74",
+      "name": "Convert to File7",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        -3140,
+        1380
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Identifica e transcreve as imagens",
+        "height": 227.11653913117755,
+        "width": 809.4697158869521
+      },
+      "id": "e002baad-8515-481c-9e4e-d25c9b5bc113",
+      "name": "Sticky Note14",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3560,
+        1320
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Identifica e transcreve os áudios",
+        "height": 255.41432385368404,
+        "width": 729.2230537404986,
+        "color": 4
+      },
+      "id": "eb120f33-c035-4bd0-91f8-e98fbdcef70b",
+      "name": "Sticky Note15",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3560,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "6ddb5b65-3522-4a08-8a0e-2446f0d6c57d",
+              "leftValue": "={{ $json.FinalTranscripition }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "25ece38b-8490-445f-a5ce-29f80ddfc6de",
+      "name": "If4",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.1,
+      "position": [
+        -2360,
+        1040
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "99667d07-ff62-4627-9136-64622c85c979",
+              "name": "FinalTranscripition",
+              "value": "={{ $('Webhook').item.json.body.data.message.conversation }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "60f5a6ab-2dd3-4c3d-b475-8e0e69a05e67",
+      "name": "Set Message from image",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3320,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Obtendo o valor de 'content' do nó 'OpenAI7'\nconst content = $node[\"OpenAI8\"].json[\"content\"];\n\n// Obtendo o valor de 'caption' do nó 'Webhook4'\nconst caption = $node[\"Webhook\"].json[\"body\"][\"data\"][\"message\"][\"imageMessage\"][\"caption\"];\n\n// Concatenar os valores\nconst concatenatedText = content + \" \" + caption;\n\n// Retorna o texto concatenado\nreturn {\n  json: {\n    concatenatedText\n  }\n};"
+      },
+      "id": "7c4b8a45-2b56-442b-af8f-ab4f6e11c4a3",
+      "name": "Code1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2840,
+        1380
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "99667d07-ff62-4627-9136-64622c85c979",
+              "name": "FinalTranscripition",
+              "value": "={{ $json.concatenatedText }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2aa3b65c-1c5d-4704-821b-5e8a1816f743",
+      "name": "Set Message from image4",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2680,
+        1380
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "66f1b455-0f91-4380-acb3-3d3c515b3513",
+              "name": "UrlEvo",
+              "value": "={{ $('Webhook').item.json[\"body\"][\"server_url\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "cd42d461-5c60-4023-8602-d545009b4d55",
+              "name": "Estancia",
+              "value": "={{ $('Webhook').item.json[\"body\"][\"instance\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "1afba137-5b44-4ad9-9d90-364f7b5eba59",
+              "name": "UrlFlowise",
+              "value": "https://flowise.trecofantastico.com.br/api/v1/prediction/63f100eb-ca25-4cc7-b011-6d107dfef4f8",
+              "type": "string"
+            },
+            {
+              "id": "18339a2f-8a33-489e-9a78-2534d9d194fe",
+              "name": "ApiKeyGroq",
+              "value": "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",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1ebcb6d8-0cf4-40f9-9030-e3e76ee5114b",
+      "name": "Info Base1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3500,
+        1080
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fb5f6e40-23b7-46ac-a01b-a538d68b01e7",
+              "name": "base64",
+              "value": "={{ $('Webhook').item.json[\"body\"][\"data\"][\"message\"][\"base64\"] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "467a6fca-3881-4193-8dc3-b11115fa2e4e",
+      "name": "Pega Base",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3360,
+        1080
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/audio/transcriptions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=bearer {{ $('Info Base1').item.json[\"ApiKeyGroq\"] }}"
+            },
+            {
+              "name": "Content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "whisper-large-v3"
+            },
+            {
+              "name": "temperature",
+              "value": "0.7"
+            },
+            {
+              "name": "response_format",
+              "value": "json"
+            },
+            {
+              "name": "language",
+              "value": "pt"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "mp4"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c46537b6-20a7-4629-9bc3-c40800be0884",
+      "name": "GroqTranscreve1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3060,
+        1080
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "base64",
+        "binaryPropertyName": "mp4",
+        "options": {
+          "fileName": "data.mp4"
+        }
+      },
+      "id": "52abe19a-ab47-4583-b1ed-e95251865c3b",
+      "name": "Convert to File2",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        -3220,
+        1080
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "99667d07-ff62-4627-9136-64622c85c979",
+              "name": "FinalTranscripition",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7270cbea-8300-4060-870e-b1f42286a4c0",
+      "name": "Set Message from Audio1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2920,
+        1080
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "id": "0a18a9de-d4f9-4680-b85f-b4b7e934d717",
+      "name": "Wait3",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1100,
+        480
+      ],
+      "webhookId": "74482ef6-9151-41be-bad0-8af14a5df887"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "5aa7e097-878c-43d0-8093-dac1ced274a5",
+              "leftValue": "={{ $json.data[0].id }}",
+              "rightValue": "={{ $('Cria a mensagem').item.json.id }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e68c80de-8a65-4876-a00d-fce770e75d78",
+      "name": "Verifica se o usuário mandou mais mensagens1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.1,
+      "position": [
+        -780,
+        480
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "7eb93a98-c131-4d65-9a8d-be2111b8f47f",
+      "name": "Se for mandado o fluxo  é encerrado1",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -600,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "id": "9efcea35-9fc2-4ce0-9a8f-33592f971669",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        -2960,
+        760
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "HqyrCnwePmXKkfxw",
+          "name": "[main] - openia.com - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "chatgpt-4o-latest",
+          "mode": "list",
+          "cachedResultName": "CHATGPT-4O-LATEST"
+        },
+        "text": "=**Prompt para Descrição Detalhada da Estética Corporal com Base em Instruções de Imagem**\n\n**Instruções Iniciais:**\nAo descrever a imagem, foque exclusivamente na pessoa retratada, ignorando quaisquer elementos de fundo, roupas, ou outros objetos. Primeiramente, utilize qualquer texto fornecido no campo entre parentese {{ $('Webhook').item.json.body.data.message.imageMessage.caption }} para guiar sua descrição. Se o campo estiver vazio, baseie-se apenas nos detalhes visuais observados na imagem.\n\n**Detalhes a serem descritos:**\n\n1. **Pele:**\n   - **Textura:** Descreva se a pele parece suave, áspera, ou mostra irregularidades.\n   - **Cor:** Mencione se a cor da pele é uniforme ou se há presença de manchas, hiperpigmentação.\n   - **Características Notáveis:** Identifique qualquer presença de rugas, linhas de expressão, cicatrizes ou outras marcas notáveis.\n   - **Hidratação e Brilho:** Observe e relate sobre o brilho e a hidratação da pele.\n\n2. **Gordura Abdominal:**\n   - **Distribuição:** Comente sobre a distribuição da gordura na região abdominal, descrevendo se parece proeminente, volumosa ou definida.\n   - **Definição Muscular:** Mencione se há definição muscular visível ou se a mesma está coberta por gordura.\n   - **Retenção de Líquidos:** Relate qualquer sinal observável de retenção de líquidos ou inchaço.\n\n3. **Medidas Corporais:**\n   - **Proporções:** Fale sobre as proporções entre a cintura, quadris e pernas.\n   - **Contorno Corporal:** Descreva o contorno corporal, observando simetria e quaisquer desproporções notáveis.\n\n**Informação Adicional:**\n   - Sua descrição deve ser clara e focada somente na pessoa na imagem, providenciando detalhes visuais pertinentes sem inferir qualidades ou análises.\n\nso descreva a imagem nao retorne nada falando que é uma descrição faça o texto sem qualquer formatação",
+        "inputType": "base64",
+        "options": {}
+      },
+      "id": "992321c4-3957-4740-9907-493239a538ad",
+      "name": "OpenAI8",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        -2980,
+        1380
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "HqyrCnwePmXKkfxw",
+          "name": "[main] - openia.com - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.openai.com/v1/threads/{{ $json.thread_id }}/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "OpenAI-Beta",
+              "value": "assistants=v2"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "76737ecc-5664-4a4d-b22a-9bc56399aa19",
+      "name": "listar mensagens2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -960,
+        480
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "HqyrCnwePmXKkfxw",
+          "name": "[main] - openia.com - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "28f28c66-59a5-470b-8b30-a4bf47735d10",
+              "leftValue": "={{ $json.thread_id }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "24e7d956-1b65-46c2-a3ae-9e0940637ee3",
+      "name": "Possui Thread?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.1,
+      "position": [
+        -3940,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.openai.com/v1/threads/{{ $('Switch1').first().json.thread_id }}/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "OpenAI-Beta",
+              "value": "assistants=v2"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "role",
+              "value": "user"
+            },
+            {
+              "name": "content",
+              "value": "=# informação do dia atual e os dias da semana.\n\nData e hora atual: {{ $now.format('dd-LL-yyyy HH:mm:ss') }}: {{ $now.weekdayLong }}\n- {{ $now.plus(1, 'days').format('dd-LL-yyyy') }}: {{ $now.plus(1, 'days').weekdayLong }}\n- {{ $now.plus(2, 'days').format('dd-LL-yyyy') }}: {{ $now.plus(2, 'days').weekdayLong }}\n- {{ $now.plus(3, 'days').format('dd-LL-yyyy') }}: {{ $now.plus(3, 'days').weekdayLong }}\n- {{ $now.plus(4, 'days').format('dd-LL-yyyy') }}: {{ $now.plus(4, 'days').weekdayLong }}\n------------\n#dados do usuário\nNome do usuário: {{ $('Switch1').item.json.user_name }}\nTelefone: {{ $('Switch1').item.json.user_id }}\nMensagem do usuário: {{ $('Merge5').item.json['FinalTranscripition'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "67a6e609-ac89-476f-8e50-2c830f27c8de",
+      "name": "Cria a mensagem",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1660,
+        500
+      ],
+      "alwaysOutputData": false,
+      "credentials": {
+        "openAiApi": {
+          "id": "HqyrCnwePmXKkfxw",
+          "name": "[main] - openia.com - tools@aimaze.com.br"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.openai.com/v1/threads/{{ $('Possui Thread?').first().json.thread_id }}/runs",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "OpenAI-Beta",
+              "value": "assistants=v2"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d91c818a-40ab-459e-99da-2478cb3da606",
+      "name": "listar mensagens3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1460,
+        720
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "HqyrCnwePmXKkfxw",
+          "name": "[main] - openia.com - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3ad149bc-c41f-46bc-a641-5e96071244eb",
+              "name": "base64",
+              "value": "={{ $('Webhook').item.json.body.data.message.base64 }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "05f951c1-4be0-4558-8111-6daa0bd07ec1",
+      "name": "Edit Fields2",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3280,
+        1680
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "base64",
+        "options": {
+          "fileName": "={{ $('Webhook').item.json.body.data.message.documentWithCaptionMessage.message.documentMessage.caption }}",
+          "mimeType": "application/pdf"
+        }
+      },
+      "id": "c2844a27-a958-4a00-b228-d82dbe48da28",
+      "name": "Convert to File3",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        -3140,
+        1680
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "id": "85299080-ae01-4a01-a876-34615559dc82",
+      "name": "Extract from File2",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -2980,
+        1680
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3b76d240-b6ff-44bd-85f1-5be645a1c877",
+              "name": "FinalTranscripition",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "38099bee-68bc-4aa4-8504-3ce4a35c35b1",
+      "name": "Edit Fields3",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2820,
+        1680
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Recebe documentos em PDF",
+        "height": 254.80860361992686,
+        "width": 656.4771385462059,
+        "color": 6
+      },
+      "id": "e9382bfb-ed6a-498f-ba70-8cd6e8ab52a2",
+      "name": "Sticky Note16",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3560,
+        1600
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.openai.com/v1/threads/{{ $('Possui Thread?').first().json.thread_id }}/runs/{{ $json.first_id }}/cancel",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "OpenAI-Beta",
+              "value": "assistants=v2"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b7e029b5-a76a-40e6-b86b-9b4800dab80a",
+      "name": "cancel run1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1220,
+        720
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "HqyrCnwePmXKkfxw",
+          "name": "[main] - openia.com - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "id": "c6e18f60-c08b-40f4-b2d6-ebf35ea9ae28",
+      "name": "Merge4",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -3960,
+        1540
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# Vision\n",
+        "height": 1537.4290758294974,
+        "width": 1017.0377812619341,
+        "color": 5
+      },
+      "id": "151da9b0-f5ad-41f3-8d52-38ab97dc8f6a",
+      "name": "Sticky Note17",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3640,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# TRANSCRIÇÃO DE AUDIO FEITA PELO GROQ",
+        "height": 270.0604285360676,
+        "width": 847.097310958336,
+        "color": 3
+      },
+      "id": "fa6cdebe-67eb-4deb-ac3c-e8c11a4eb4c7",
+      "name": "Sticky Note18",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3560,
+        980
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# Buff Memory\n## *Essa seção entende mensagens mandadas separadamente*",
+        "height": 554.7811528552347,
+        "width": 1096.1823121305529,
+        "color": 3
+      },
+      "id": "4b9f9207-384f-466d-857d-d9ca83afdf1b",
+      "name": "Sticky Note19",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2180,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Webhook').item.json.body.data.messageType }}",
+                    "rightValue": "audioMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Audio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "c5102560-5eab-49c6-aae2-f35a14faa22d",
+                    "leftValue": "={{ $('Webhook').item.json.body.data.messageType }}",
+                    "rightValue": "imageMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Imagem"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "d7de1770-ed8b-4ad4-8eb2-269d2418b467",
+                    "leftValue": "={{ $('Webhook').item.json.body.data.messageType }}",
+                    "rightValue": "=conversation",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Texto"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "7aced410-0f1a-46bd-8394-2c19f0edaece",
+                    "leftValue": "={{ $('Webhook').item.json.body.data.messageType }}",
+                    "rightValue": "documentWithCaptionMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "PDF"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "39a4b535-f87f-4813-abc0-1328e3e5a4aa",
+      "name": "O que devo transcrever",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.1,
+      "position": [
+        -3960,
+        1720
+      ],
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {},
+      "id": "98dde05b-6ce2-4d39-81b7-64448c5340b3",
+      "name": "Merge - user",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -4160,
+        620
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "60d1d0a7-c266-4608-bd4f-4767613ef0ae",
+      "name": "Merge5",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -2180,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Webhook').item.json.body.data.messageType }}",
+                    "rightValue": "/extendedTextMessage|conversation/",
+                    "operator": {
+                      "type": "string",
+                      "operation": "regex"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "26e40a8a-8cc6-49af-9c5e-5ace09818a2a",
+                    "leftValue": "={{ $('Webhook').item.json.body.data.messageType }}",
+                    "rightValue": "/audioMessage/",
+                    "operator": {
+                      "type": "string",
+                      "operation": "regex"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Audio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "4eeabdb7-9be5-406a-a1fc-89972bc0cf4a",
+                    "leftValue": "={{ $('Webhook').item.json.body.data.messageType }}",
+                    "rightValue": "/imageMessage/",
+                    "operator": {
+                      "type": "string",
+                      "operation": "regex"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Image"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "2445ba93-a8d9-4f95-82dc-e49e266f421a",
+                    "leftValue": "={{ $('Webhook').item.json.body.data.messageType }}",
+                    "rightValue": "/documentWithCaptionMessage/",
+                    "operator": {
+                      "type": "string",
+                      "operation": "regex"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "pdf"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "cb4382e2-1384-4ca3-9a85-75beea0c1dcf",
+      "name": "Switch1",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.1,
+      "position": [
+        -3640,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.openai.com/v1/threads/{{ $('Merge - user').item.json.thread_id }}/messages?order=desc",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "OpenAI-Beta",
+              "value": "assistants=v2"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "17c3c576-b8aa-4419-a523-fa0974c97234",
+      "name": "Pega a ultima mensagem",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1180,
+        1840
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "HqyrCnwePmXKkfxw",
+          "name": "[main] - openia.com - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "options": {}
+      },
+      "id": "e920cc42-af8c-4b54-8486-28415287a92d",
+      "name": "Extract from File3",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        2380,
+        1500
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "input": "={{ $json.data[0].content[0].text.value }}",
+        "voice": "nova",
+        "options": {}
+      },
+      "id": "d0d444e2-48cb-42df-820a-2c254695dcb6",
+      "name": "Envia resposta em Audio1",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.5,
+      "position": [
+        2000,
+        1500
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "HqyrCnwePmXKkfxw",
+          "name": "[main] - openia.com - tools@aimaze.com.br"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "# Mensagem Final para o usuário\n### \n",
+        "height": 1609,
+        "width": 1767,
+        "color": 4
+      },
+      "id": "0a8352fd-9553-4481-9b1d-db962806b288",
+      "name": "Sticky Note20",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        620,
+        1460
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"gpt-4o-2024-08-06\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Você vai receber mensagens grandes do usuário. Seu trabalho é separá-las de acordo com o JSON Schema. Não invente ou altere a mensagem original de forma alguma. Cada chunk será enviado para o usuário, então tenha certeza de que não serão vários chunks, limite-se a 2 ou 3 frases por parágrafo. REGRAS: - Manter listas juntas, com seu respectivo título - Faça com que os parágrafos sejam longos o suficiente para não enviar várias mensagens para o usuário.\"\n    },\n    {\n      \"role\": \"user\"\n      \"content\": \"{{ $json.data[0].content[0].text.value }}\"\n    }\n  ],\n  \"response_format\": {\n    \"type\": \"json_schema\",\n    \"json_schema\": {\n      \"name\": \"message_chunks\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"chunks\": {\n            \"type\": \"array\",\n            \"description\": \"An array of message chunks, where each chunk is a separate paragraph.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"paragraph\": {\n                  \"type\": \"string\",\n                  \"description\": \"A coherent paragraph extracted from the large message.\"\n                },\n                \"sequence_number\": {\n                  \"type\": \"number\",\n                  \"description\": \"The order of this chunk in the original message.\"\n                }\n              },\n              \"required\": [\"paragraph\", \"sequence_number\"],\n              \"additionalProperties\": false\n            }\n          }\n        },\n        \"required\": [\"chunks\"],\n        \"additionalProperties\": false\n      }\n    }\n  }\n}",
+        "options": {}
+      },
+      "id": "0b0fbaaa-1bc9-4567-bd4a-1efa138ba85f",
+      "name": "Chat Completion - Formatter",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1000,
+        2960
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "HqyrCnwePmXKkfxw",
+          "name": "[main] - openia.com - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d6e36e29-97f2-4375-9b90-a5e83d3e3225",
+              "name": "messages",
+              "value": "={{ $json.choices[0].message.content }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9d603522-4db7-463c-8e40-eb4beea1e341",
+      "name": "Separa Chunks",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1160,
+        2960
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "id": "f2ea214a-2b46-479e-88e6-3d5b861a7124",
+      "name": "Buffer",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2660,
+        2780
+      ],
+      "webhookId": "19deac3c-ecf4-44bc-9ee4-f12c83d3199f"
+    },
+    {
+      "parameters": {},
+      "id": "f736da2a-91d2-4d33-8675-23540ea2032e",
+      "name": "Fim",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2440,
+        2620
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "messages.chunks",
+        "options": {}
+      },
+      "id": "76dc739d-8ac8-431c-aedd-55d04c872b3e",
+      "name": "Split Out",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1300,
+        2960
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "bd4dd15a-fce4-4162-9122-6e8aa80aacb0",
+      "name": "Loop Over Items5",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1980,
+        2700
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Envia Mensagem + Tratamento\nEnvia mensagens curtas e trata mensagens longas",
+        "height": 388.7538544254027,
+        "width": 1243.0339165003102,
+        "color": 7
+      },
+      "id": "7f3aeb2b-9410-4203-a46d-d213345c9061",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        940,
+        2600
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "required_action.submit_tool_outputs.tool_calls",
+        "options": {}
+      },
+      "id": "8a4ece2a-1590-4392-983a-838061221bba",
+      "name": "Split Out2",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        940,
+        -660
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": "={{ $('Loop Over Items3').context[\"done\"] }}"
+        }
+      },
+      "id": "b478ed1c-0884-4ff8-ba37-6f1c47a92665",
+      "name": "Loop Over Items3",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1160,
+        -660
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6b39511f-c389-468a-916e-9d2d0a286f11",
+              "name": "arguments",
+              "value": "={{ $json.function.arguments }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6cdc0e7c-f963-49ec-b075-d5bfd8c6a063",
+      "name": "separa argumentos1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1380,
+        -520
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5e65cdf4-ec47-468a-8f7b-d1492d6ced4a",
+                    "leftValue": "={{ $('Loop Over Items3').item.json.function.name }}",
+                    "rightValue": "verifica_agendamentos",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "verifica_agendamentos"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "07d9a1c1-fa50-4a47-88ff-3b1e19472e66",
+                    "leftValue": "={{ $('Loop Over Items3').item.json.function.name }}",
+                    "rightValue": "agendar_reuniao",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "agendar_reunião"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "2896c149-9318-4c42-afa1-4d469b05e0ff",
+                    "leftValue": "={{ $('Split Out2').item.json.function.name }}",
+                    "rightValue": "reagendar_evento",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "=reagendar_evento"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "69f49263-210b-4144-8b9d-873ca275fe5a",
+                    "leftValue": "={{ $('Loop Over Items3').item.json.function.name }}",
+                    "rightValue": "excluir_agendamento",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "excluir_agendamento"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f6992fb5-bfcd-47f1-9e0a-c73515258d1c",
+                    "leftValue": "={{ $('Split Out2').item.json.function.name }}",
+                    "rightValue": "get_user_data",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "get_user_data"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Split Out2').item.json.function.name }}",
+                    "rightValue": "get_books",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "07f5d75e-6c33-4003-83fd-d28e82d4464f"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "get_books"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "52ad1d15-9d3f-4f71-aa82-af532466af3a",
+                    "leftValue": "={{ $('Split Out2').item.json.function.name }}",
+                    "rightValue": "save_user_data",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "save_user_data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fc8a1a7e-45f4-4bab-b7c7-a237f8543fe9",
+      "name": "Escolhe Função1",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1580,
+        -520
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "155eb1f0-0ba5-4a9e-97ff-af2b0a8122e6",
+                    "leftValue": "={{ $json.status }}",
+                    "rightValue": "requires_action",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "requires_action"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.status }}",
+                    "rightValue": "queued",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "queued"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "f5e53bc7-5a5f-4255-a8a0-974bb330bd19",
+                    "leftValue": "={{ $json.status }}",
+                    "rightValue": "in_progress",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "in_progress"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "d4c5de3b-7709-49cb-8690-2e11698dcc21",
+                    "leftValue": "={{ $json.status }}",
+                    "rightValue": "cancelling",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "cancelling"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "e14cf09b-fcd7-407d-98d6-cb0e7a42e1e7",
+                    "leftValue": "={{ $json.status }}",
+                    "rightValue": "cancelled",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "cancelled"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "9d6e149b-372d-406b-9084-efb2a8777d0f",
+                    "leftValue": "={{ $json.status }}",
+                    "rightValue": "failed",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "failed"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "25ea1e18-c8cb-4c5f-811f-a1e9c7155985",
+                    "leftValue": "={{ $json.status }}",
+                    "rightValue": "completed",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "completed"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "17b401d4-54f0-4686-8c75-1b3cb6db007d",
+                    "leftValue": "={{ $json.status }}",
+                    "rightValue": "incomplete",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "incomplete"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "a17c6659-6997-49da-bad2-7e0583251559",
+                    "leftValue": "={{ $json.status }}",
+                    "rightValue": "expired",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "expired"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "cbd703ee-dcdb-471c-b7bf-0b3a37130c54",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.1,
+      "position": [
+        -60,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "id": "e0056ede-09c8-4a64-9a13-e2f41650727b",
+      "name": "Wait2",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        260,
+        520
+      ],
+      "webhookId": "9be9e11c-6bd7-443a-b3ba-417977fac9b3"
+    },
+    {
+      "parameters": {
+        "content": "## Parte que conversa com a inteligencia artificial ",
+        "height": 585,
+        "width": 883
+      },
+      "id": "651d0f38-c0d9-459f-9bfe-fa91e20926f2",
+      "name": "Sticky Note12",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -880,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.openai.com/v1/threads/{{ $('Merge - user').first().json.thread_id }}/runs/{{ $('Switch').item.json.id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "OpenAI-Beta",
+              "value": "assistants=v2"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5a345cbb-d102-4285-a141-994b19ada996",
+      "name": "Get Run Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        460,
+        680
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "HqyrCnwePmXKkfxw",
+          "name": "[main] - openia.com - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.openai.com/v1/threads/{{ $('Merge - user').first().json.thread_id }}/runs",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "OpenAI-Beta",
+              "value": "assistants=v2"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "assistant_id",
+              "value": "asst_DSNuWrewEP9RPrXcAWQCvnBR"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b08b0ccb-3efc-454b-9679-3f8ece1396f3",
+      "name": "Executa uma Run - Aqui está o assistant",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -380,
+        460
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "HqyrCnwePmXKkfxw",
+          "name": "[main] - openia.com - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "databaseId": 168854,
+        "tableId": 418669,
+        "returnAll": true,
+        "additionalOptions": {
+          "filters": {
+            "fields": [
+              {
+                "field": 3211226,
+                "operator": "contains",
+                "value": "={{ $json.arguments.category }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        3720,
+        -100
+      ],
+      "id": "2a658172-6ed9-4d76-9715-49badf524609",
+      "name": "Baserow1",
+      "credentials": {
+        "baserowApi": {
+          "id": "jODihG7gncUc7khv",
+          "name": "[baserow.io] - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"output\": \"name: {{ $json.Name }}, category: {{ $json.Category.value }}, author: {{ $json.author }}, price: {{ $json.price }}, media_url: {{ $json.URL }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3940,
+        -100
+      ],
+      "id": "327239c7-20cb-4c01-871e-09f5534e1692",
+      "name": "Prepara outpoot"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "concatenate",
+              "field": "output"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1,
+      "position": [
+        5580,
+        -320
+      ],
+      "id": "5874702f-9368-4c0e-8693-6df5ddbb38c1",
+      "name": "Summarize"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"tool_call_id\": \"{{ $('Split Out2').item.json.id }}\",\n  \"output\": \"{{ $json.concatenated_output }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        5760,
+        660
+      ],
+      "id": "baf2daf0-5f33-4994-a6af-51bf6bcff0e8",
+      "name": "Set tool call id"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1380,
+        -760
+      ],
+      "id": "29e33e44-992b-473e-a2f6-eb0c3f130ac2",
+      "name": "Aggregate1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.openai.com/v1/threads/{{ $('Get Run Status').item.json.thread_id }}/runs/{{ $('Get Run Status').item.json.id }}/submit_tool_outputs",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "OpenAI-Beta",
+              "value": "assistants=v2"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"tool_outputs\": {{ $json.output }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1720,
+        -1040
+      ],
+      "id": "e024446f-d9da-4faf-9e8c-3fc7d08ff748",
+      "name": "HTTP Request",
+      "credentials": {
+        "openAiApi": {
+          "id": "HqyrCnwePmXKkfxw",
+          "name": "[main] - openia.com - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1e729de8-85e8-48ed-a102-dff33c603ee8",
+              "name": "output",
+              "value": "={{ $json.data }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1540,
+        -1040
+      ],
+      "id": "d26a333a-bdc3-4b1f-9872-fdd78e908a2a",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "databaseId": 168854,
+        "tableId": 418625,
+        "rowId": "={{ $('Baserow - Get User').first().json.id }}",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": 3214404,
+              "fieldValue": "={{ $json.arguments.address }}"
+            },
+            {
+              "fieldId": 3884594,
+              "fieldValue": "={{ $json.arguments.email }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        3940,
+        500
+      ],
+      "id": "f9aac091-3c9f-474e-ab69-81cc1ebc95f6",
+      "name": "Baserow3",
+      "credentials": {
+        "baserowApi": {
+          "id": "jODihG7gncUc7khv",
+          "name": "[baserow.io] - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"output\": \"name: {{ $json.user_name }}, whatsapp: {{ $json.user_id }}, address:{{ $json.address }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4160,
+        500
+      ],
+      "id": "9597e247-6422-4424-b0ac-f69407ff4152",
+      "name": "Prepara outpoot1"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "databaseId": 168854,
+        "tableId": 418625,
+        "rowId": "={{ $('Baserow - Get User').first().json.id }}"
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        3940,
+        300
+      ],
+      "id": "a677e7ae-4077-4e2e-9dc6-bfe5c62ff6ac",
+      "name": "Baserow4",
+      "credentials": {
+        "baserowApi": {
+          "id": "jODihG7gncUc7khv",
+          "name": "[baserow.io] - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"output\": \"name: {{ $json.user_name }}, whatsapp: {{ $json.user_id }}, address:{{ $json.address }}, id:{{ $json.id }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4160,
+        300
+      ],
+      "id": "49116b8a-1c7c-49be-874b-fdba9a7b1cea",
+      "name": "Prepara outpoot2"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Webhook').item.json.body.data.messageType }}",
+                    "rightValue": "audioMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "audio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c04ec9b2-70be-4603-9d45-c62c69f32d24",
+                    "leftValue": "={{ $json.data[0].content[0].text.value.extractUrl() }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Product"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "2cbe22b8-2506-4a9a-9194-c0c5657b9590",
+                    "leftValue": "={{ $json.data[0].content[0].text.value.extractUrl() }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notExists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1620,
+        1840
+      ],
+      "id": "7c0dca4a-2a4e-42a6-bae3-5de6a32fb761",
+      "name": "Switch3",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "itens",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        2340,
+        1900
+      ],
+      "id": "0c1e29bf-c199-4f2f-bc50-5caa885c398a",
+      "name": "Split Out3"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "id": "8ccf75e5-10dd-4d3f-9337-bc322c304773",
+      "name": "Buffer1",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3080,
+        2000
+      ],
+      "webhookId": "86d95581-b080-4e73-8188-cbbf7ad185e2"
+    },
+    {
+      "parameters": {},
+      "id": "be9b4de4-4229-4d09-9468-d6667dba11fe",
+      "name": "Fim1",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2900,
+        1820
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "4441eb50-d6be-47b2-b484-aa7754679a7b",
+      "name": "Loop Over Items6",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2580,
+        1900
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Captura o texto bruto da última mensagem\nconst rawData = $('Pega a ultima mensagem').first().json?.data?.[0]?.content?.[0]?.text?.value || \"\";\n\n// Regex para capturar os itens e rodapé\nconst itemRegex = /(\\*\\*(.*?)\\*\\*)[\\s\\S]*?Autor: (.*?)\\n.*?Preço: R\\$(.*?)\\n.*?\\!\\[.*?\\]\\((.*?)\\)/g;\nconst footerRegex = /\\n\\n(Se você se interessar.*?)$/; // Captura mensagem final\nconst headerRegex = /^(.*?):\\n\\n/; // Captura mensagem inicial\n\n// Inicializar variáveis\nconst mensagemInicial = rawData.match(headerRegex)?.[1]?.trim() || \"\";\nconst mensagemFinal = rawData.match(footerRegex)?.[1]?.trim() || \"\";\nconst itens = [];\nlet match;\n\n// Loop pelos itens encontrados\nwhile ((match = itemRegex.exec(rawData)) !== null) {\n  itens.push({\n    produto: `**${match[2]}**\\nAutor: ${match[3]}\\nPreço: R${match[4]}`,\n    url: match[5]\n  });\n}\n\n// Concatena mensagem inicial e final no primeiro produto\nif (itens.length > 0) {\n  itens[0].produto = `${mensagemInicial}\\n\\n${mensagemFinal}\\n\\n${itens[0].produto}`;\n}\n\n// Resultado final\nconst resultado = {\n  itens\n};\n\n// Retornar o resultado\nreturn resultado;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1960,
+        1900
+      ],
+      "id": "bcc2624e-f5bb-4f6c-bac2-63e5cc850fe5",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "databaseId": 168854,
+        "tableId": 418625,
+        "returnAll": true,
+        "additionalOptions": {
+          "filters": {
+            "fields": [
+              {
+                "field": 3210935,
+                "value": "={{ $json.body.data.key.remoteJid.split('@') [0]  }}"
+              }
+            ]
+          },
+          "filterType": "OR"
+        }
+      },
+      "id": "8c19bab6-f98f-40ce-9b52-2371e76b8399",
+      "name": "Baserow - Get User",
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        -4900,
+        620
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "baserowApi": {
+          "id": "jODihG7gncUc7khv",
+          "name": "[baserow.io] - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "instanceName": "pixeomkt",
+        "options_Create_instance": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        2860,
+        2000
+      ],
+      "id": "d48273ce-ff2f-47db-93e7-03ff8dcbafc5",
+      "name": "Evolution API1",
+      "credentials": {
+        "evolutionApi": {
+          "id": "9cBJRHiC9OlAfm34",
+          "name": "wsapi.aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "aimaze",
+        "remoteJid": "={{ $('Possui Thread?').item.json.user_id }}",
+        "messageText": "={{ $json.chunks }}",
+        "options_message": {
+          "delay": "={{ $json.delay }}"
+        }
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        2240,
+        2760
+      ],
+      "id": "549bab0f-4f8c-4c23-aaeb-d4fbd836e82b",
+      "name": "Evolution API",
+      "credentials": {
+        "evolutionApi": {
+          "id": "TgOTPEmUw6n2wmlf",
+          "name": "Evolution Clindermy"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"output\": \"name: {{ $json.user_name }}, whatsapp: {{ $json.user_id }}, address:{{ $json.address }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2340,
+        2360
+      ],
+      "id": "87b7b6fc-104b-4722-ad38-338a25b24b34",
+      "name": "Prepara outpoot3"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "aimazemachine@gmail.com",
+          "mode": "list",
+          "cachedResultName": "aimazemachine@gmail.com"
+        },
+        "start": "={{ $('Escolhe Função1').item.json.arguments.data_inicio }}",
+        "end": "={{ $('Escolhe Função1').item.json.arguments.data_fim }}",
+        "additionalFields": {
+          "description": "={{ $('separa argumentos1').item.json.arguments.descricao }}",
+          "summary": "={{ $('separa argumentos1').item.json.arguments.assunto }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        3460,
+        -1200
+      ],
+      "id": "8e47df9f-e8f0-48cb-acd8-c58088330840",
+      "name": "Google Calendar3",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "Eqt8e2WwupPypoIC",
+          "name": "[calendar.google.com] - aimazemachine@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9aefd0b5-d1ff-4d18-ada1-12162c5142d1",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "bb57fb9e-d810-4386-a8b1-51b1ebd28e13",
+              "name": "summary",
+              "value": "={{ $json.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "bb4b1f69-4eed-4e70-8f0b-3498b3ecda62",
+              "name": "description",
+              "value": "={{ $json.description }}",
+              "type": "string"
+            },
+            {
+              "id": "80427945-f73e-4654-ae2b-5a1d11e90784",
+              "name": "start",
+              "value": "={{ $json.start.dateTime }}",
+              "type": "string"
+            },
+            {
+              "id": "419d8b13-1e36-4c2e-b867-f61e95565ba5",
+              "name": "end",
+              "value": "={{ $json.end.dateTime }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3680,
+        -1200
+      ],
+      "id": "4f2bbe3b-1ce4-4cc0-b43b-cfafb6b38f53",
+      "name": "Separa dados calendar"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a0fd740f-358f-46b2-8bbc-4f3c25ebf135",
+              "name": "=evento",
+              "value": "=id: {{ $json.id }}, data_comeco: {{ $json.start }}, data_fim: {{ $json.end }}. Titulo: {{ $json.summary }}. descricao: {{ $json.description }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3900,
+        -1200
+      ],
+      "id": "9b1d9650-db56-4c2a-bf27-f6d259e5d0f1",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n\"output\": \"agendado: {{ $json.evento }}\"\n}\n ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4120,
+        -1200
+      ],
+      "id": "d5a3e229-5922-4ed3-b792-610dba932f7a",
+      "name": "output"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "aimazemachine@gmail.com",
+          "mode": "list",
+          "cachedResultName": "aimazemachine@gmail.com"
+        },
+        "returnAll": true,
+        "timeMin": "={{ $json.arguments.inicio }}",
+        "timeMax": "={{ $json.arguments.fim }}",
+        "options": {
+          "timeZone": {
+            "__rl": true,
+            "value": "America/Sao_Paulo",
+            "mode": "list",
+            "cachedResultName": "America/Sao_Paulo"
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        3040,
+        -1540
+      ],
+      "id": "5deff254-e5e0-4978-ae9b-fcba58f36f8c",
+      "name": "Google Calendar4",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "Eqt8e2WwupPypoIC",
+          "name": "[calendar.google.com] - aimazemachine@gmail.com"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "concatenate",
+              "field": "evento"
+            }
+          ]
+        },
+        "options": {
+          "outputFormat": "singleItem"
+        }
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        3700,
+        -1540
+      ],
+      "id": "c857131b-bcae-4957-9a92-0aaec3bab8f1",
+      "name": "Summarize1"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n\"output\": \"horarios_disponiveis_no_dia: {{ $json.horarioDisponivel }}\"\n}\n ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4140,
+        -1540
+      ],
+      "id": "6cb1dc03-8679-4130-a1e6-4d9b9bbc04f3",
+      "name": "output1"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "calendar": {
+          "__rl": true,
+          "value": "aimazemachine@gmail.com",
+          "mode": "list",
+          "cachedResultName": "aimazemachine@gmail.com"
+        },
+        "eventId": "={{ $json.arguments.event_id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        3940,
+        100
+      ],
+      "id": "d15479bf-b246-4f54-8c5c-a39a4d5373e4",
+      "name": "Google Calendar5",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "Eqt8e2WwupPypoIC",
+          "name": "[calendar.google.com] - aimazemachine@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n\"output\": \"excluir_agendamento:{{ $json.success }}, o agendamento foi excluido com sucesso.\"\n}\n ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4160,
+        100
+      ],
+      "id": "1286294f-659d-4fa2-9f79-8d8b018faf9c",
+      "name": "output2"
+    },
+    {
+      "parameters": {
+        "content": "# Agendar reunião\n{\n  \"name\": \"agendar_reuniao\",\n  \"description\": \"Agenda uma reunião definindo data de início, data de fim (uma hora depois da data de início), assunto e descrição\",\n  \"strict\": true,\n  \"parameters\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"data_inicio\": {\n        \"type\": \"string\",\n        \"description\": \"Data de início da reunião no formato ISO 8601, por exemplo, 2025-09-19T00:00:00\"\n      },\n      \"data_fim\": {\n        \"type\": \"string\",\n        \"description\": \"Data de fim da reunião no mesmo formato, que deve ser uma hora após a data de início\"\n      },\n      \"assunto\": {\n        \"type\": \"string\",\n        \"description\": \"Assunto da reunião\"\n      },\n      \"descricao\": {\n        \"type\": \"string\",\n        \"description\": \"Descrição da reunião\"\n      }\n    },\n    \"additionalProperties\": false,\n    \"required\": [\n      \"data_inicio\",\n      \"data_fim\",\n      \"assunto\",\n      \"descricao\"\n    ]\n  }\n}",
+        "height": 240,
+        "width": 300
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -5460,
+        1640
+      ],
+      "id": "52b05906-9da8-4b92-83bb-3fe6dff59a32",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# verifica horários\n{\n  \"name\": \"verifica_agendamentos\",\n  \"description\": \"Verifica os agendamentos existentes no intervalo diário (00:00 às 23:59) e filtra somente os que ocorrem dentro do horário comercial (07:00 às 19:00, com o último horário de marcação às 18:00), retornando os horários livres em blocos de 1h.\",\n  \"strict\": true,\n  \"parameters\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"inicio\": {\n        \"type\": \"string\",\n        \"description\": \"Data e hora de início do intervalo para verificação, no formato ISO 8601 (ex: 2025-09-19T00:00:00)\"\n      },\n      \"fim\": {\n        \"type\": \"string\",\n        \"description\": \"Data e hora de fim do intervalo para verificação, no mesmo formato (ex: 2025-09-19T23:59:00)\"\n      }\n    },\n    \"additionalProperties\": false,\n    \"required\": [\n      \"inicio\",\n      \"fim\"\n    ]\n  }\n}",
+        "height": 240,
+        "width": 300
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -5460,
+        1380
+      ],
+      "id": "641faea3-4698-4c5b-b811-49b2deb59081",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "# delete\n{\n  \"name\": \"excluir_agendamet\",\n  \"description\": \"Exclui um agendamento com base no Event ID fornecido\",\n  \"strict\": true,\n  \"parameters\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"event_id\": {\n        \"type\": \"string\",\n        \"description\": \"Identificador do evento a ser excluído\"\n      }\n    },\n    \"additionalProperties\": false,\n    \"required\": [\n      \"event_id\"\n    ]\n  }\n}",
+        "height": 240,
+        "width": 280
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -5760,
+        1380
+      ],
+      "id": "61afa2d0-8c56-4fa6-9653-87f5b0a53cb2",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Obtém a string dos eventos concatenados do input\nconst inputData = $json.concatenated_evento;\n// Define o dia desejado (pode vir do input, se não utiliza o padrão \"2025-04-15\")\nconst diaDesejado = $json.date || \"2025-04-15\";\n\n// Regex para extrair os dados de cada agendamento\nconst regex = /id:\\s*([^,]+),\\s*data_comeco:\\s*([^,]+),\\s*data_fim:\\s*([^.]+)\\.\\s*Titulo:\\s*([^.,]+)/g;\nconst eventos = [];\nlet match;\n\n// Para cada evento encontrado, extrai diretamente os valores de hora e minuto a partir da string\nwhile ((match = regex.exec(inputData)) !== null) {\n  const dataComecoStr = match[2].trim();\n  const dataFimStr = match[3].trim();\n  \n  // Considera somente os agendamentos do dia desejado, conforme a string de data\n  if (dataComecoStr.startsWith(diaDesejado)) {\n    // Extrai a parte do horário (HH:MM) da string\n    // Exemplo: \"2025-04-15T16:00:00-03:00\" -> pega \"16:00\"\n    const timePartInicio = dataComecoStr.split(\"T\")[1].substring(0, 5);\n    const timePartFim = dataFimStr.split(\"T\")[1].substring(0, 5);\n    \n    // Separa hora e minutos e converte para número\n    const [horaInicio, minutoInicio] = timePartInicio.split(\":\").map(Number);\n    const [horaFim, minutoFim] = timePartFim.split(\":\").map(Number);\n    \n    // Converte para total de minutos desde a meia-noite\n    const totalInicio = horaInicio * 60 + minutoInicio;\n    const totalFim = horaFim * 60 + minutoFim;\n    \n    eventos.push({ start: totalInicio, end: totalFim });\n  }\n}\n\n// Gera os intervalos disponíveis entre 07:00 e 19:00 (cada um com duração de 1 hora)\n// Para cada slot, verifica se há sobreposição com algum evento\nconst horarioDisponivel = [];\nfor (let hora = 7; hora < 19; hora++) {\n  const slotInicio = hora * 60;\n  const slotFim = (hora + 1) * 60;\n  \n  // Verifica se existe algum evento cujo horário se sobrepõe com o slot\n  const ocupado = eventos.some(ev => ev.start < slotFim && ev.end > slotInicio);\n  \n  if (!ocupado) {\n    // Formata o horário com dois dígitos, se necessário\n    const startStr = hora < 10 ? \"0\" + hora : \"\" + hora;\n    const endHour = hora + 1;\n    const endStr = endHour < 10 ? \"0\" + endHour : \"\" + endHour;\n    \n    horarioDisponivel.push(`${startStr}:00-${endStr}:00`);\n  }\n}\n\n// Cria a string final com os horários disponíveis\nconst resultText = horarioDisponivel.join(\", \");\nreturn [{ horarioDisponivel: resultText }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3920,
+        -1540
+      ],
+      "id": "0d56dce1-530c-436c-9ff2-1b8674f4a415",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9aefd0b5-d1ff-4d18-ada1-12162c5142d1",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "bb57fb9e-d810-4386-a8b1-51b1ebd28e13",
+              "name": "summary",
+              "value": "={{ $json.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "80427945-f73e-4654-ae2b-5a1d11e90784",
+              "name": "start",
+              "value": "={{ $json.start.dateTime }}",
+              "type": "string"
+            },
+            {
+              "id": "419d8b13-1e36-4c2e-b867-f61e95565ba5",
+              "name": "end",
+              "value": "={{ $json.end.dateTime }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3260,
+        -1540
+      ],
+      "id": "42a628c8-115d-4795-9099-deeb4ceff523",
+      "name": "Separa dados calendar2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a0fd740f-358f-46b2-8bbc-4f3c25ebf135",
+              "name": "=evento",
+              "value": "=id: {{ $json.id }},  data_comeco: {{ $json.start }}, data_fim: {{ $json.end }}. Titulo: {{ $json.summary }}.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3480,
+        -1540
+      ],
+      "id": "62f05a92-a98a-4c7b-9239-6b444c08d1ff",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "content": "## Node-code separa horários disponíveis do calendário bloco de uma hora\n\n// Obtém a string dos eventos concatenados do input\nconst inputData = $json.concatenated_evento;\n\n// A data desejada pode vir do input ou assumir um padrão (ex.: \"2025-04-04\")\nconst diaDesejado = $json.date || \"2025-04-04\";\n\n// Regex para extrair os dados de cada agendamento\nconst regex = /id:\\s*([^,]+),\\s*data_comeco:\\s*([^,]+),\\s*data_fim:\\s*([^.]+)\\.\\s*Titulo:\\s*([^.,]+)/g;\n\n// Conjunto para armazenar os horários ocupados\nconst horariosOcupados = new Set();\nlet match;\n\nwhile ((match = regex.exec(inputData)) !== null) {\n  const dataComeco = match[2].trim();\n  // Considera somente os agendamentos que iniciam na data desejada\n  if (dataComeco.startsWith(diaDesejado)) {\n    // Extrai a parte do horário de início\n    const timePartInicio = dataComeco.split(\"T\")[1];\n    const horaInicio = parseInt(timePartInicio.substring(0, 2));    \n    const minutosInicio = parseInt(timePartInicio.substring(3, 5));   \n    // Se os minutos forem >= 30, bloqueia o próximo horário; senão, bloqueia o horário atual\n    const slotInicio = minutosInicio >= 30 ? horaInicio + 1 : horaInicio;\n    \n    // Extrai a parte do horário de término\n    const dataFim = match[3].trim();\n    const timePartFim = dataFim.split(\"T\")[1];\n    const horaFim = parseInt(timePartFim.substring(0, 2));    \n    const minutosFim = parseInt(timePartFim.substring(3, 5));   \n    const slotFim = minutosFim >= 30 ? horaFim + 1 : horaFim;\n    \n    // Bloqueia todos os horários entre o início e o término (não incluindo o horário de término)\n    for (let hora = slotInicio; hora < slotFim; hora++) {\n      horariosOcupados.add(hora);\n    }\n  }\n}\n\n// Gera os intervalos disponíveis entre 07:00 e 19:00, removendo os horários ocupados\nconst horarioDisponivel = [];\nfor (let hora = 7; hora < 19; hora++) {\n  if (!horariosOcupados.has(hora)) {\n    // Formata para ter dois dígitos, se necessário\n    const start = hora < 10 ? \"0\" + hora : hora;\n    const end = (hora + 1) < 10 ? \"0\" + (hora + 1) : (hora + 1);\n    horarioDisponivel.push(`${start}:00-${end}:00`);\n  }\n}\n\n// Cria a string final conforme desejado\nconst resultText = \"horarioDisponivel: \" + horarioDisponivel.join(\", \");\n\n// Retorna como array de objetos (JSON válido)\nreturn [{ horarioDisponivel: resultText }];",
+        "height": 240,
+        "width": 300,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -5460,
+        1120
+      ],
+      "id": "96e37446-4945-47c9-a2a0-e9e0d01b2a8e",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Node-code separa horários disponíveis do calendário bloco de meia hora\n\n// Obtém a string dos eventos concatenados do input\nconst inputData = $json.concatenated_evento;\n\n// A data desejada pode vir do input ou assumir um padrão (ex.: \"2025-04-04\")\nconst diaDesejado = $json.date || \"2025-04-04\";\n\n// Regex para extrair os dados de cada agendamento\nconst regex = /id:\\s*([^,]+),\\s*data_comeco:\\s*([^,]+),\\s*data_fim:\\s*([^.]+)\\.\\s*Titulo:\\s*([^.,]+)/g;\n\n// Conjunto para armazenar os horários ocupados\nconst horariosOcupados = new Set();\nlet match;\n\nwhile ((match = regex.exec(inputData)) !== null) {\n  const dataComeco = match[2].trim();\n  // Considera somente os agendamentos que iniciam na data desejada\n  if (dataComeco.startsWith(diaDesejado)) {\n    // Processa a parte de início do evento\n    const timePartInicio = dataComeco.split(\"T\")[1];\n    const horaInicio = parseInt(timePartInicio.substring(0, 2));    \n    const minutosInicio = parseInt(timePartInicio.substring(3, 5));   \n    // Converte para slot de 30 minutos (cada hora possui 2 slots)\n    const slotInicio = horaInicio * 2 + (minutosInicio >= 30 ? 1 : 0);\n    \n    // Processa a parte de término do evento\n    const dataFim = match[3].trim();\n    const timePartFim = dataFim.split(\"T\")[1];\n    const horaFim = parseInt(timePartFim.substring(0, 2));    \n    const minutosFim = parseInt(timePartFim.substring(3, 5));   \n    const slotFim = horaFim * 2 + (minutosFim >= 30 ? 1 : 0);\n    \n    // Bloqueia todos os slots de 30 minutos entre o início e o término (slotFim não incluso)\n    for (let slot = slotInicio; slot < slotFim; slot++) {\n      horariosOcupados.add(slot);\n    }\n  }\n}\n\n// Gera os intervalos disponíveis entre 07:00 e 19:00, em blocos de 30 minutos\nconst horarioDisponivel = [];\n// Cada slot representa 30 minutos; de 07:00 (7*2 = 14) até 19:00 (19*2 = 38, não incluso)\nfor (let slot = 7 * 2; slot < 19 * 2; slot++) {\n  if (!horariosOcupados.has(slot)) {\n    const startHour = Math.floor(slot / 2);\n    const startMin = (slot % 2 === 0) ? \"00\" : \"30\";\n    const endSlot = slot + 1;\n    const endHour = Math.floor(endSlot / 2);\n    const endMin = (endSlot % 2 === 0) ? \"00\" : \"30\";\n    // Formata para ter dois dígitos, se necessário\n    const startStr = (startHour < 10 ? \"0\" + startHour : startHour) + \":\" + startMin;\n    const endStr = (endHour < 10 ? \"0\" + endHour : endHour) + \":\" + endMin;\n    horarioDisponivel.push(`${startStr}-${endStr}`);\n  }\n}\n\n// Cria a string final conforme desejado\nconst resultText = \"horarioDisponivel: \" + horarioDisponivel.join(\", \");\n\n// Retorna como array de objetos (JSON válido)\nreturn [{ horarioDisponivel: resultText }];",
+        "height": 240,
+        "width": 280,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -5760,
+        1120
+      ],
+      "id": "a3e02b13-35af-4e01-9db1-467e1cec642d",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "# Reagendar Reunião\n{\n  \"name\": \"reagendar_evento\",\n  \"description\": \"Reagenda o evento com nova data de início e fim, juntamente com assunto e descrição. Essa função é chamada quando o usuário informar que não poderá comparecer, cancelar ou pedir para reagendar o evento.\",\n  \"strict\": true,\n  \"parameters\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"data_inicio\": {\n        \"type\": \"string\",\n        \"description\": \"Nova data de início do evento no formato ISO 8601, por exemplo, 2025-09-19T00:00:00\"\n      },\n      \"data_fim\": {\n        \"type\": \"string\",\n        \"description\": \"Nova data de fim do evento no mesmo formato, que representa o término do evento\"\n      },\n      \"assunto\": {\n        \"type\": \"string\",\n        \"description\": \"Assunto do evento\"\n      },\n      \"descricao\": {\n        \"type\": \"string\",\n        \"description\": \"Descrição detalhada do evento\"\n      }\n    },\n    \"additionalProperties\": false,\n    \"required\": [\n      \"data_inicio\",\n      \"data_fim\",\n      \"assunto\",\n      \"descricao\"\n    ]\n  }\n}",
+        "height": 240,
+        "width": 300
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -5140,
+        1120
+      ],
+      "id": "26a3f5f0-6bf1-4906-88b4-ed4d992b35eb",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9aefd0b5-d1ff-4d18-ada1-12162c5142d1",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "bb57fb9e-d810-4386-a8b1-51b1ebd28e13",
+              "name": "summary",
+              "value": "={{ $json.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "bb4b1f69-4eed-4e70-8f0b-3498b3ecda62",
+              "name": "description",
+              "value": "={{ $json.description }}",
+              "type": "string"
+            },
+            {
+              "id": "80427945-f73e-4654-ae2b-5a1d11e90784",
+              "name": "start",
+              "value": "={{ $json.start.dateTime }}",
+              "type": "string"
+            },
+            {
+              "id": "419d8b13-1e36-4c2e-b867-f61e95565ba5",
+              "name": "end",
+              "value": "={{ $json.end.dateTime }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3660,
+        -580
+      ],
+      "id": "d892cca3-384a-4fa6-83f0-41e4956eb77b",
+      "name": "Separa dados calendar4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a0fd740f-358f-46b2-8bbc-4f3c25ebf135",
+              "name": "=evento",
+              "value": "=id: {{ $json.id }}, data_comeco: {{ $json.start }}, data_fim: {{ $json.end }}. Titulo: {{ $json.summary }}. descricao: {{ $json.description }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3880,
+        -580
+      ],
+      "id": "cc51f7b5-8749-46f8-9f6e-58cdc719a566",
+      "name": "Edit Fields8"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n\"output\": \"reagendado: O seu evento foi reagendado com sucesso {{ $json.evento }}\"\n}\n ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4100,
+        -580
+      ],
+      "id": "2fec8d16-0992-4c2b-84c2-0e276f8939eb",
+      "name": "output4"
+    },
+    {
+      "parameters": {
+        "content": "# verifica horários v02\n{\n  \"name\": \"verifica_agendamentos\",\n  \"description\": \"Verifica os agendamentos existentes no intervalo diário (00:00 às 23:59) e filtra somente os que ocorrem dentro do horário comercial (07:00 às 19:00, com o último horário de marcação às 18:00), retornando os horários livres em blocos de 1h.\",\n  \"strict\": true,\n  \"parameters\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"inicio\": {\n        \"type\": \"string\",\n        \"description\": \"Data e hora de início do intervalo para verificação, no formato ISO 8601 (ex: 2025-09-19T00:00:00)\"\n      },\n      \"fim\": {\n        \"type\": \"string\",\n        \"description\": \"Data e hora de fim do intervalo para verificação, no mesmo formato (ex: 2025-09-19T23:59:00)\"\n      }\n    },\n    \"additionalProperties\": false,\n    \"required\": [\n      \"inicio\",\n      \"fim\"\n    ]\n  }\n}",
+        "height": 240,
+        "width": 300
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -5140,
+        1640
+      ],
+      "id": "cc7d918d-a5ad-41d1-8c6c-faa67bdbcd8c",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "content": "# Agendar reunião v02\n{\n  \"name\": \"agendar_reuniao\",\n  \"description\": \"Agenda uma reunião definindo data de início, data de fim (uma hora depois da data de início), assunto e descrição\",\n  \"strict\": true,\n  \"parameters\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"data_inicio\": {\n        \"type\": \"string\",\n        \"description\": \"Data de início da reunião no formato ISO 8601, por exemplo, 2025-09-19T00:00:00\"\n      },\n      \"data_fim\": {\n        \"type\": \"string\",\n        \"description\": \"Data de fim da reunião no mesmo formato, que deve ser uma hora após a data de início\"\n      },\n      \"assunto\": {\n        \"type\": \"string\",\n        \"description\": \"Assunto da reunião, no formato: Nome do procedimento <> Nome do cliente\"\n      },\n      \"descricao\": {\n        \"type\": \"string\",\n        \"description\": \"Descrição da reunião com os dados de contato (email e telefone)\"\n      }\n    },\n    \"additionalProperties\": false,\n    \"required\": [\n      \"data_inicio\",\n      \"data_fim\",\n      \"assunto\",\n      \"descricao\"\n    ]\n  }\n}",
+        "height": 240,
+        "width": 300
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -5140,
+        1380
+      ],
+      "id": "2d4dd045-035d-44a5-8ebe-eca126be0273",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ff416a00-7729-4ef9-accb-b04329f96ca9",
+              "leftValue": "={{ $json.available }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3220,
+        -480
+      ],
+      "id": "7e1601e1-767b-4675-9e0e-c8c325359aae",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n\"output\": \"reagendamento: esse horário não está disponível,Fale que acabou de conferir e viu que nao estava disponível\"\n}\n ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4100,
+        -380
+      ],
+      "id": "06e4f673-ea2e-4c94-a101-d31c16b2be9e",
+      "name": "output5"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "calendar": {
+          "__rl": true,
+          "value": "aimazemachine@gmail.com",
+          "mode": "list",
+          "cachedResultName": "aimazemachine@gmail.com"
+        },
+        "eventId": "={{ $('Escolhe Função1').item.json.arguments.eventID }}",
+        "updateFields": {
+          "end": "={{ $('Escolhe Função1').item.json.arguments.data_fim }}",
+          "start": "={{ $('Escolhe Função1').item.json.arguments.data_inicio }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        3440,
+        -580
+      ],
+      "id": "a4ae7ed9-b4f3-4436-9920-41494d08093e",
+      "name": "Google Calendar10",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "Eqt8e2WwupPypoIC",
+          "name": "[calendar.google.com] - aimazemachine@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "dcd908df-43bf-4847-828c-7f6aeb865ee8",
+              "leftValue": "={{ !!Object.keys($node[\"calendar 9\"].data).length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3240,
+        -1100
+      ],
+      "id": "f53ad9d2-aadb-4eb2-a88b-16c175de2535",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9aefd0b5-d1ff-4d18-ada1-12162c5142d1",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "d7a3c4c8-5729-4ead-983c-9ffae19666d8",
+              "name": "htmlLink",
+              "value": "={{ $json.htmlLink }}",
+              "type": "string"
+            },
+            {
+              "id": "bb57fb9e-d810-4386-a8b1-51b1ebd28e13",
+              "name": "summary",
+              "value": "={{ $json.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "bb4b1f69-4eed-4e70-8f0b-3498b3ecda62",
+              "name": "description",
+              "value": "={{ $json.description }}",
+              "type": "string"
+            },
+            {
+              "id": "80427945-f73e-4654-ae2b-5a1d11e90784",
+              "name": "start",
+              "value": "={{ $json.start.dateTime }}",
+              "type": "string"
+            },
+            {
+              "id": "419d8b13-1e36-4c2e-b867-f61e95565ba5",
+              "name": "end",
+              "value": "={{ $json.end.dateTime }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3680,
+        -1000
+      ],
+      "id": "825dcac2-8881-452f-839d-cc34fcef6bf9",
+      "name": "Separa dados calendar5"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a0fd740f-358f-46b2-8bbc-4f3c25ebf135",
+              "name": "=evento",
+              "value": "=id: {{ $json.id }}, data_comeco: {{ $json.start }}, data_fim: {{ $json.end }}. Titulo: {{ $json.summary }}. descricao: {{ $json.description }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3900,
+        -1000
+      ],
+      "id": "b930e413-f745-485a-a4eb-e9fbe9b976b2",
+      "name": "Edit Fields9"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n\"output\": \"verificacao: o usuário possui os seguintes eventos,{{ $json.evento }}.\"\n}\n ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4120,
+        -1000
+      ],
+      "id": "648e50e4-c6b7-40e1-94a6-1e8e17adfc80",
+      "name": "output7"
+    },
+    {
+      "parameters": {
+        "resource": "calendar",
+        "calendar": {
+          "__rl": true,
+          "value": "aimazemachine@gmail.com",
+          "mode": "list",
+          "cachedResultName": "aimazemachine@gmail.com"
+        },
+        "timeMin": "={{ $json.arguments.data_inicio }}",
+        "timeMax": "={{ $json.arguments.data_fim }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        3000,
+        -480
+      ],
+      "id": "fda1d751-720a-4797-81f0-5ae389dba0aa",
+      "name": "verifica_evento_individual",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "Eqt8e2WwupPypoIC",
+          "name": "[calendar.google.com] - aimazemachine@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "aimazemachine@gmail.com",
+          "mode": "list",
+          "cachedResultName": "aimazemachine@gmail.com"
+        },
+        "limit": 3,
+        "timeMax": "={{ $now.plus({ week: 4 }) }}",
+        "options": {
+          "query": "={{ $json.arguments.descricao }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        3020,
+        -1100
+      ],
+      "id": "d9dc4894-5057-4c93-9a10-d741299e6173",
+      "name": "calendar 9",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "Eqt8e2WwupPypoIC",
+          "name": "[calendar.google.com] - aimazemachine@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Agendar reunião v03\n// Obtém a string dos eventos concatenados do input\nconst inputData = $json.concatenated_evento;\n// Define o dia desejado (pode vir do input, se não utiliza o padrão \"2025-04-15\")\nconst diaDesejado = $json.date || \"2025-04-15\";\n\n// Regex para extrair os dados de cada agendamento\nconst regex = /id:\\s*([^,]+),\\s*data_comeco:\\s*([^,]+),\\s*data_fim:\\s*([^.]+)\\.\\s*Titulo:\\s*([^.,]+)/g;\nconst eventos = [];\nlet match;\n\n// Para cada evento encontrado, extrai diretamente os valores de hora e minuto a partir da string\nwhile ((match = regex.exec(inputData)) !== null) {\n  const dataComecoStr = match[2].trim();\n  const dataFimStr = match[3].trim();\n  \n  // Considera somente os agendamentos do dia desejado, conforme a string de data\n  if (dataComecoStr.startsWith(diaDesejado)) {\n    // Extrai a parte do horário (HH:MM) da string\n    // Exemplo: \"2025-04-15T16:00:00-03:00\" -> pega \"16:00\"\n    const timePartInicio = dataComecoStr.split(\"T\")[1].substring(0, 5);\n    const timePartFim = dataFimStr.split(\"T\")[1].substring(0, 5);\n    \n    // Separa hora e minutos e converte para número\n    const [horaInicio, minutoInicio] = timePartInicio.split(\":\").map(Number);\n    const [horaFim, minutoFim] = timePartFim.split(\":\").map(Number);\n    \n    // Converte para total de minutos desde a meia-noite\n    const totalInicio = horaInicio * 60 + minutoInicio;\n    const totalFim = horaFim * 60 + minutoFim;\n    \n    eventos.push({ start: totalInicio, end: totalFim });\n  }\n}\n\n// Gera os intervalos disponíveis entre 07:00 e 19:00 (cada um com duração de 1 hora)\n// Para cada slot, verifica se há sobreposição com algum evento\nconst horarioDisponivel = [];\nfor (let hora = 7; hora < 19; hora++) {\n  const slotInicio = hora * 60;\n  const slotFim = (hora + 1) * 60;\n  \n  // Verifica se existe algum evento cujo horário se sobrepõe com o slot\n  const ocupado = eventos.some(ev => ev.start < slotFim && ev.end > slotInicio);\n  \n  if (!ocupado) {\n    // Formata o horário com dois dígitos, se necessário\n    const startStr = hora < 10 ? \"0\" + hora : \"\" + hora;\n    const endHour = hora + 1;\n    const endStr = endHour < 10 ? \"0\" + endHour : \"\" + endHour;\n    \n    horarioDisponivel.push(`${startStr}:00-${endStr}:00`);\n  }\n}\n\n// Cria a string final com os horários disponíveis\nconst resultText = \"horarioDisponivel: \" + horarioDisponivel.join(\", \");\nreturn [{ horarioDisponivel: resultText }];",
+        "height": 240,
+        "width": 280
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -5760,
+        1640
+      ],
+      "id": "9a4a0ec2-b947-4987-84ba-fce1aea32acc",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        -1840,
+        -40
+      ],
+      "id": "a768ef5e-f3f6-49ea-bbf8-9b04b94f0b09",
+      "name": "Date & Time"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Define o número máximo de caracteres por chunk (ajuste conforme preferir)\nconst maxChars = 300;\n\n// Obtém o texto de entrada a partir do novo caminho\nconst longText = ($json.data && $json.data[0] && $json.data[0].content && $json.data[0].content[0] && $json.data[0].content[0].text && $json.data[0].content[0].text.value) || \"\";\n\n// Verifica se o texto possui características de mensagem de agendamento\nconst schedulingKeywords = [\"⏰\", \"Data:\", \"agendar\", \"disponíveis\"];\nconst isScheduling = schedulingKeywords.some(keyword => longText.includes(keyword));\n\n// Se for uma mensagem de agendamento, retorna o texto completo como único bloco\nif (isScheduling) {\n\treturn [{ chunks: [{ text: longText, delay: 0 }] }];\n}\n\n// Primeiramente, tenta dividir por parágrafos usando quebras duplas de linha\nlet initialChunks = longText.includes(\"\\n\\n\") ? longText.split(/\\n\\s*\\n/) : [longText];\n\n// Array para armazenar os chunks finais\nlet chunks = [];\n\n/**\n * Função auxiliar para dividir um parágrafo muito longo em blocos menores\n * utilizando a separação por sentenças.\n */\nfunction splitLongParagraph(paragraph) {\n  // Se o parágrafo já for menor que o limite, retorna como único chunk\n  if (paragraph.length <= maxChars) {\n    return [paragraph];\n  } else {\n    // Divide o parágrafo em sentenças usando uma regex que detecta pontuação final seguida de espaço e letra maiúscula\n    const sentences = paragraph.split(/(?<=[.?!])\\s+(?=[A-ZÀ-Ú])/);\n    let currentChunk = \"\";\n    let result = [];\n\n    sentences.forEach(sentence => {\n      const trimmedSentence = sentence.trim();\n      // Acumula sentenças enquanto o tamanho do bloco não ultrapasse o limite\n      if ((currentChunk + \" \" + trimmedSentence).trim().length <= maxChars) {\n        currentChunk = (currentChunk + \" \" + trimmedSentence).trim();\n      } else {\n        // Se já houver texto acumulado, salva o bloco e inicia um novo\n        if (currentChunk) {\n          result.push(currentChunk);\n          currentChunk = trimmedSentence;\n        } else {\n          // Caso uma única sentença ultrapasse o limite, força a divisão\n          result.push(trimmedSentence.slice(0, maxChars));\n          currentChunk = trimmedSentence.slice(maxChars);\n        }\n      }\n    });\n    // Adiciona o último bloco, se existir\n    if (currentChunk) result.push(currentChunk);\n    return result;\n  }\n}\n\n// Processa cada bloco inicial; se ultrapassar o limite, subdivide usando a função auxiliar\ninitialChunks.forEach(chunk => {\n  let trimmed = chunk.trim();\n  if (trimmed) {\n    if (trimmed.length > maxChars) {\n      let subChunks = splitLongParagraph(trimmed);\n      chunks = chunks.concat(subChunks);\n    } else {\n      chunks.push(trimmed);\n    }\n  }\n});\n\n// A seguir, para cada chunk, estimamos o tempo de digitação e cortamos esse tempo pela metade.\n// A estimativa usada é 1 segundo por palavra (1000 ms), reduzindo para 1/2 desse tempo.\n// Assim, o delay é calculado como: (número de palavras * 1000) / 2.\nconst chunksWithDelay = chunks.map(chunk => {\n  // Conta as palavras (filtrando espaços em branco vazios)\n  const wordCount = chunk.split(/\\s+/).filter(word => word.length > 0).length;\n  // Calcula o delay (em ms) para o chunk\n  const delay = (wordCount * 1000) / 5;\n  return { text: chunk, delay: delay };\n});\n\n// Retorna somente o array com os blocos personalizados (cada um com seu delay)\nreturn [{ chunks: chunksWithDelay }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        2740
+      ],
+      "id": "f17ffdfd-b7a9-48cb-93b7-4a851ccb59d5",
+      "name": "Code6"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "chunks",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1620,
+        2740
+      ],
+      "id": "39290333-0b42-48b4-b254-7a008868015b",
+      "name": "Split Out4",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "129cc250-d535-4d03-ab19-6a8ea2b775f7",
+              "name": "chunks",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            },
+            {
+              "id": "e1383b34-a6b8-4993-a644-cd6d2336b93e",
+              "name": "delay",
+              "value": "={{ $json.delay }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1780,
+        2740
+      ],
+      "id": "027b0d95-0d92-4a2c-8309-4ad540732b3f",
+      "name": "Edit Fields13"
+    },
+    {
+      "parameters": {
+        "queue": "messages_clindermy",
+        "options": {
+          "arguments": {
+            "argument": [
+              {
+                "key": "x-queue-type",
+                "value": "quorum"
+              }
+            ]
+          },
+          "acknowledge": "executionFinishesSuccessfully",
+          "jsonParseBody": true,
+          "parallelMessages": -1
+        }
+      },
+      "type": "n8n-nodes-base.rabbitmqTrigger",
+      "typeVersion": 1,
+      "position": [
+        -5480,
+        620
+      ],
+      "id": "0bae9a9f-06b5-46ac-8d36-1a028bd02e06",
+      "name": "RabbitMQ Trigger",
+      "credentials": {
+        "rabbitmq": {
+          "id": "eFg67tlHOn6E75F4",
+          "name": "[fila.aimaze.com.br] - aimazelab"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b6a5fcec-175d-4242-8058-b084d6c69c5c",
+              "name": "body",
+              "value": "={{ $json.content.body }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -5260,
+        620
+      ],
+      "id": "afe2aab3-a491-4873-ad95-46dbe1e78e6e",
+      "name": "Webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Define o número máximo de caracteres por chunk (ajuste conforme preferir)\nconst maxChars = 300;\n\n// Obtém o texto de entrada a partir do novo caminho\nconst longText = ($json.data && $json.data[0] && $json.data[0].content && $json.data[0].content[0] && $json.data[0].content[0].text && $json.data[0].content[0].text.value) || \"\";\n\n// Verifica se o texto possui características de mensagem de agendamento\nconst schedulingKeywords = [\"⏰\", \"Data:\", \"agendar\", \"disponíveis\"];\nconst isScheduling = schedulingKeywords.some(keyword => longText.includes(keyword));\n\n// Se for uma mensagem de agendamento, retorna o texto completo como único bloco\nif (isScheduling) {\n\treturn [{ chunks: [longText] }];\n}\n\n// Primeiramente, tenta dividir por parágrafos usando quebras duplas de linha\nlet initialChunks = longText.includes(\"\\n\\n\") ? longText.split(/\\n\\s*\\n/) : [longText];\n\n// Array para armazenar os chunks finais\nlet chunks = [];\n\n/**\n * Função auxiliar para dividir um parágrafo muito longo em blocos menores\n * utilizando a separação por sentenças.\n */\nfunction splitLongParagraph(paragraph) {\n  // Se o parágrafo já for menor que o limite, retorna como único chunk\n  if (paragraph.length <= maxChars) {\n    return [paragraph];\n  } else {\n    // Divide o parágrafo em sentenças usando uma regex que detecta pontuação final seguida de espaço e letra maiúscula\n    const sentences = paragraph.split(/(?<=[.?!])\\s+(?=[A-ZÀ-Ú])/);\n    let currentChunk = \"\";\n    let result = [];\n\n    sentences.forEach(sentence => {\n      const trimmedSentence = sentence.trim();\n      // Acumula sentenças enquanto o tamanho do bloco não ultrapasse o limite\n      if ((currentChunk + \" \" + trimmedSentence).trim().length <= maxChars) {\n        currentChunk = (currentChunk + \" \" + trimmedSentence).trim();\n      } else {\n        // Se já houver texto acumulado, salva o bloco e inicia um novo\n        if (currentChunk) {\n          result.push(currentChunk);\n          currentChunk = trimmedSentence;\n        } else {\n          // Caso uma única sentença ultrapasse o limite, força a divisão\n          result.push(trimmedSentence.slice(0, maxChars));\n          currentChunk = trimmedSentence.slice(maxChars);\n        }\n      }\n    });\n    // Adiciona o último bloco, se existir\n    if (currentChunk) result.push(currentChunk);\n    return result;\n  }\n}\n\n// Processa cada bloco inicial; se ultrapassar o limite, subdivide usando a função auxiliar\ninitialChunks.forEach(chunk => {\n  let trimmed = chunk.trim();\n  if (trimmed) {\n    if (trimmed.length > maxChars) {\n      let subChunks = splitLongParagraph(trimmed);\n      chunks = chunks.concat(subChunks);\n    } else {\n      chunks.push(trimmed);\n    }\n  }\n});\n\n// Retorna somente o array com os blocos personalizados\nreturn [{ chunks }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1240,
+        3140
+      ],
+      "id": "e6c668cf-37f2-4673-958d-a39d32dc15f2",
+      "name": "Code7",
+      "disabled": true
+    }
+  ],
+  "connections": {
+    "Usuário Existe?": {
+      "main": [
+        [
+          {
+            "node": "Merge - user",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cria o usuário que nao foi encontrado no grupo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Busca participantes do grupo de teste": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items2": {
+      "main": [
+        [],
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cria o usuário que nao foi encontrado no grupo": {
+      "main": [
+        [
+          {
+            "node": "Merge - user",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Cria a thread": {
+      "main": [
+        [
+          {
+            "node": "Adiciona Thread ao usuário",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Adiciona Thread ao usuário": {
+      "main": [
+        [
+          {
+            "node": "Merge - user",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Audio Base": {
+      "main": [
+        [
+          {
+            "node": "Convert to File6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File6": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Message from Audio3": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image Base": {
+      "main": [
+        [
+          {
+            "node": "Convert to File7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File7": {
+      "main": [
+        [
+          {
+            "node": "OpenAI8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Set Message from image": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Set Message from image4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Message from image4": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Info Base1": {
+      "main": [
+        [
+          {
+            "node": "Pega Base",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pega Base": {
+      "main": [
+        [
+          {
+            "node": "Convert to File2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GroqTranscreve1": {
+      "main": [
+        [
+          {
+            "node": "Set Message from Audio1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File2": {
+      "main": [
+        [
+          {
+            "node": "GroqTranscreve1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait3": {
+      "main": [
+        [
+          {
+            "node": "listar mensagens2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verifica se o usuário mandou mais mensagens1": {
+      "main": [
+        [
+          {
+            "node": "Executa uma Run - Aqui está o assistant",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Se for mandado o fluxo  é encerrado1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Set Message from Audio3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI8": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "listar mensagens2": {
+      "main": [
+        [
+          {
+            "node": "Verifica se o usuário mandou mais mensagens1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Possui Thread?": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cria a thread",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cria a mensagem": {
+      "main": [
+        [
+          {
+            "node": "Wait3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "listar mensagens3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "listar mensagens3": {
+      "main": [
+        [
+          {
+            "node": "cancel run1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Convert to File3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File3": {
+      "main": [
+        [
+          {
+            "node": "Extract from File2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "cancel run1": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge - user": {
+      "main": [
+        [
+          {
+            "node": "Possui Thread?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge5": {
+      "main": [
+        [
+          {
+            "node": "Cria a mensagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Set Message from image",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Audio Base",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Image Base",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pega a ultima mensagem": {
+      "main": [
+        [
+          {
+            "node": "Switch3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File3": {
+      "main": [
+        []
+      ]
+    },
+    "Envia resposta em Audio1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Completion - Formatter": {
+      "main": [
+        [
+          {
+            "node": "Separa Chunks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Separa Chunks": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buffer": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        []
+      ]
+    },
+    "Loop Over Items5": {
+      "main": [
+        [
+          {
+            "node": "Fim",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Evolution API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items3": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "separa argumentos1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "separa argumentos1": {
+      "main": [
+        [
+          {
+            "node": "Escolhe Função1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Split Out2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [],
+        [],
+        [
+          {
+            "node": "Pega a ultima mensagem",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        []
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "Get Run Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Run Status": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Executa uma Run - Aqui está o assistant": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Escolhe Função1": {
+      "main": [
+        [
+          {
+            "node": "Google Calendar4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "calendar 9",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "verifica_evento_individual",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Calendar5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Baserow4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [
+          {
+            "node": "Baserow3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baserow1": {
+      "main": [
+        [
+          {
+            "node": "Prepara outpoot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepara outpoot": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize": {
+      "main": [
+        [
+          {
+            "node": "Set tool call id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set tool call id": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baserow3": {
+      "main": [
+        [
+          {
+            "node": "Prepara outpoot1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepara outpoot1": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baserow4": {
+      "main": [
+        [
+          {
+            "node": "Prepara outpoot2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepara outpoot2": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch3": {
+      "main": [
+        [
+          {
+            "node": "Envia resposta em Audio1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Buffer1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items6": {
+      "main": [
+        [
+          {
+            "node": "Fim1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Evolution API1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out3": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Split Out3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baserow - Get User": {
+      "main": [
+        [
+          {
+            "node": "Usuário Existe?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evolution API1": {
+      "main": [
+        [
+          {
+            "node": "Buffer1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evolution API": {
+      "main": [
+        [
+          {
+            "node": "Buffer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Calendar3": {
+      "main": [
+        [
+          {
+            "node": "Separa dados calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Separa dados calendar": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Calendar4": {
+      "main": [
+        [
+          {
+            "node": "Separa dados calendar2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize1": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Calendar5": {
+      "main": [
+        [
+          {
+            "node": "output2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "output1": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "output": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "output2": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "output1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Separa dados calendar2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Summarize1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Separa dados calendar4": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields8": {
+      "main": [
+        [
+          {
+            "node": "output4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "output4": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Google Calendar10",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "output5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "output5": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Calendar10": {
+      "main": [
+        [
+          {
+            "node": "Separa dados calendar4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Google Calendar3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Separa dados calendar5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Separa dados calendar5": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields9": {
+      "main": [
+        [
+          {
+            "node": "output7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "output7": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "verifica_evento_individual": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "calendar 9": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code6": {
+      "main": [
+        [
+          {
+            "node": "Split Out4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out4": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields13": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RabbitMQ Trigger": {
+      "main": [
+        [
+          {
+            "node": "Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Baserow - Get User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "RabbitMQ Trigger": [
+      {
+        "json": {
+          "fields": {
+            "consumerTag": "amq.ctag-509Z3R-YrzwlTFk3W_awNg",
+            "deliveryTag": 7,
+            "redelivered": true,
+            "exchange": "",
+            "routingKey": "messages_clindermy"
+          },
+          "properties": {
+            "headers": {
+              "x-delivery-count": 18
+            }
+          },
+          "content": {
+            "headers": {
+              "host": "webhooks.aimaze.com.br",
+              "user-agent": "axios/1.7.9",
+              "content-length": "618",
+              "accept-encoding": "gzip, compress, deflate, br",
+              "content-type": "application/json",
+              "x-forwarded-for": "178.156.151.68",
+              "x-forwarded-host": "webhooks.aimaze.com.br",
+              "x-forwarded-port": "443",
+              "x-forwarded-proto": "https",
+              "x-forwarded-server": "traefik_traefik.1",
+              "x-real-ip": "178.156.151.68"
+            },
+            "params": {},
+            "query": {},
+            "body": {
+              "event": "messages.upsert",
+              "instance": "aimaze",
+              "data": {
+                "key": {
+                  "remoteJid": "553897404646@s.whatsapp.net",
+                  "fromMe": true,
+                  "id": "3EB0313622905104C3CAAD"
+                },
+                "pushName": "Aimaze Teste",
+                "status": "SERVER_ACK",
+                "message": {
+                  "conversation": "bruna@pixeo.com.br"
+                },
+                "messageType": "conversation",
+                "messageTimestamp": 1744658681,
+                "instanceId": "0d2743da-178c-41ea-a451-387c6dcd81b1",
+                "source": "web"
+              },
+              "destination": "https://webhooks.aimaze.com.br/webhook/pixeomachine",
+              "date_time": "2025-04-14T16:24:41.215Z",
+              "sender": "553187712022@s.whatsapp.net",
+              "server_url": "https://wsapi.clindermy.aimaze.com.br",
+              "apikey": "C20C6E36A318-4F67-9204-89A641D4A789"
+            },
+            "webhookUrl": "https://webhooks.aimaze.com.br/webhook/pixeomachine",
+            "executionMode": "production"
+          }
+        }
+      }
+    ]
+  },
+  "versionId": "428a18fc-e2f8-4325-a4cf-597e2c272da5",
+  "triggerCount": 1,
+  "tags": [
+    {
+      "createdAt": "2025-01-03T00:21:36.014Z",
+      "updatedAt": "2025-01-03T00:21:36.014Z",
+      "id": "hi69d8K45xRFQtMr",
+      "name": "Book Keeper"
+    }
+  ]
+}
