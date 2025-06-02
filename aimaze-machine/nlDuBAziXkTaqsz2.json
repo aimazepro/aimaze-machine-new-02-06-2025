@@ -1,0 +1,302 @@
+{
+  "createdAt": "2025-04-19T16:29:25.284Z",
+  "updatedAt": "2025-04-20T14:21:48.355Z",
+  "id": "nlDuBAziXkTaqsz2",
+  "name": "verifica_agendamentos",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "aimazemachine@gmail.com",
+          "mode": "list",
+          "cachedResultName": "aimazemachine@gmail.com"
+        },
+        "returnAll": true,
+        "timeMin": "={{ $json.start_datetime }}",
+        "timeMax": "={{ $json.end_datetime }}",
+        "options": {
+          "timeZone": {
+            "__rl": true,
+            "value": "America/Sao_Paulo",
+            "mode": "list",
+            "cachedResultName": "America/Sao_Paulo"
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "53d1c6a6-a701-4aeb-bfe1-06b82d6216b3",
+      "name": "Google Calendar4",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "Eqt8e2WwupPypoIC",
+          "name": "[calendar.google.com] - aimazemachine@gmail.com"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "concatenate",
+              "field": "evento"
+            }
+          ]
+        },
+        "options": {
+          "outputFormat": "singleItem"
+        }
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        660,
+        0
+      ],
+      "id": "c5d4f862-4535-48b1-b5cf-9eafd64166ca",
+      "name": "Summarize1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d5f5c828-13cf-4f92-9c92-fec41155af9f",
+              "name": "response",
+              "value": "={{ $json.horarios_disponiveis }}\nRetorne somente três horarios ou da tarde ou da manha dependendo do que o cliente responder nesse formato abaixo:\n\nCaso não tenha hoário disponível falei com o usuário e sugira outra parte do dia ou outro dia.\n\n<Nome>, na <dia‑semana> de <período> temos:\n\n⏰ HH:MM\n⏰ HH:MM\n⏰ HH:MM\n\nQual horário fica melhor pra você?",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1320,
+        0
+      ],
+      "id": "461b8125-b6e4-4660-a85c-a3822887388e",
+      "name": "output1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============ parâmetros “fáceis de mexer” =============\nconst inicioExpediente = 8;   // 08:00\nconst fimExpediente    = 19;  // 19:00  (o último slot será 18:30‑19:00)\nconst passoMinutos     = 30;  // tamanho do slot\n// =======================================================\n\n// 1. Entrada -------------------------------------------------------------\nconst entrada = $json.concatenated_evento ?? '';\n\n/* Entrada esperada (exemplo):\n   data_comeco: 2025-04-17T15:00:00-03:00, data_fim: 2025-04-17T16:00:00-03:00.,\n   data_comeco: 2025-04-17T17:00:00-03:00, data_fim: 2025-04-17T17:30:00-03:00.\n*/\n\n// 2. Extrai períodos ocupados -------------------------------------------\nconst busyRegex = /data_comeco:\\s*([\\d\\-T:+]+),\\s*data_fim:\\s*([\\d\\-T:+]+)\\.?/g;\nconst ocupados = []; // {iniMin, fimMin}\nlet m;\nwhile ((m = busyRegex.exec(entrada)) !== null) {\n  ocupados.push({\n    iniMin: isoToMinutes(m[1]),\n    fimMin: isoToMinutes(m[2]),\n  });\n}\n\n// 3. Gera slots disponíveis ---------------------------------------------\nconst disponiveis = [];\nfor (let iniMin = inicioExpediente * 60;\n     iniMin < fimExpediente * 60;\n     iniMin += passoMinutos) {\n\n  const fimMin = iniMin + passoMinutos;\n\n  // colisão?  (slotStart < busyEnd) && (slotEnd > busyStart)\n  const colide = ocupados.some(({iniMin: bIni, fimMin: bFim}) =>\n                                iniMin < bFim && fimMin > bIni);\n  if (colide) continue;\n\n  disponiveis.push(`${formatHHMM(iniMin)}-${formatHHMM(fimMin)}`);\n}\n\n// 4. Retorno -------------------------------------------------------------\nreturn [\n  {\n    json: {\n      horarios_disponiveis: disponiveis.join(', ')\n    }\n  }\n];\n\n// ============ utilitários ==============================================\nfunction isoToMinutes(iso) {\n  // “2025‑04‑17T15:00:00‑03:00” → 15*60 + 0\n  const timePart = iso.split('T')[1];      // 15:00:00‑03:00\n  const [hh, mm] = timePart.split(':');\n  return Number(hh) * 60 + Number(mm);\n}\n\nfunction formatHHMM(minutos) {\n  const hh = String(Math.floor(minutos / 60)).padStart(2, '0');\n  const mm = String(minutos % 60).padStart(2, '0');\n  return `${hh}:${mm}`;\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        0
+      ],
+      "id": "89ee7b41-cf1e-409b-bbb0-5c227f6e4894",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "80427945-f73e-4654-ae2b-5a1d11e90784",
+              "name": "start",
+              "value": "={{ $json.start.dateTime }}",
+              "type": "string"
+            },
+            {
+              "id": "419d8b13-1e36-4c2e-b867-f61e95565ba5",
+              "name": "end",
+              "value": "={{ $json.end.dateTime }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        0
+      ],
+      "id": "1ff772d5-8731-432b-886f-cffc331fb567",
+      "name": "Separa dados calendar2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a0fd740f-358f-46b2-8bbc-4f3c25ebf135",
+              "name": "=evento",
+              "value": "=data_comeco: {{ $json.start }}, data_fim: {{ $json.end }}.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        440,
+        0
+      ],
+      "id": "5ba1e16f-1440-4c31-b8cd-ec11a286230a",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2cbe1040-ee6b-4c50-80be-d6b263dd9727",
+              "name": "concatenated_evento",
+              "value": "={{ $json.concatenated_evento }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        880,
+        0
+      ],
+      "id": "14864285-49dd-40a8-9f1b-5cb5652bf65d",
+      "name": "Edit Fields12"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "start_datetime"
+            },
+            {
+              "name": "end_datetime"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -260,
+        0
+      ],
+      "id": "22d3fdf6-13ea-47d2-a2a6-e62bb82fd83c",
+      "name": "When Executed by Another Workflow"
+    }
+  ],
+  "connections": {
+    "Google Calendar4": {
+      "main": [
+        [
+          {
+            "node": "Separa dados calendar2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "output1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Separa dados calendar2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Summarize1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields12": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Google Calendar4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "all",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "start_datetime": "2025-04-21T00:00:00",
+          "end_datetime": "2025-04-21T23:59:00"
+        }
+      }
+    ]
+  },
+  "versionId": "7c19089b-c31d-44e1-86e8-0ff72df16705",
+  "triggerCount": 0,
+  "tags": []
+}
