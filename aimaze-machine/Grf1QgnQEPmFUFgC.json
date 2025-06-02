@@ -1,0 +1,161 @@
+{
+  "createdAt": "2025-05-04T15:10:19.740Z",
+  "updatedAt": "2025-05-13T12:57:41.945Z",
+  "id": "Grf1QgnQEPmFUFgC",
+  "name": "intervenção humana",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "pixeomachine",
+        "options": {}
+      },
+      "id": "ec4b582c-2651-49f8-8977-5db593b94e04",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -280,
+        -40
+      ],
+      "webhookId": "f153c146-4aaa-4aec-b658-8e7da950ffa4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "eb099a35-f2a2-4fb0-85fa-9f8e91291914",
+              "name": "instance",
+              "value": "={{ $json.body.instance }}",
+              "type": "string"
+            },
+            {
+              "id": "14855eb0-9a1a-4c15-bb49-9fc056549086",
+              "name": "remoteJid",
+              "value": "={{ $json.body.data.key.remoteJid }}",
+              "type": "string"
+            },
+            {
+              "id": "624bd790-457d-43ee-ac39-d01c2607154e",
+              "name": "fromMe",
+              "value": "={{ $json.body.data.key.fromMe }}",
+              "type": "boolean"
+            },
+            {
+              "id": "2f47103e-4e06-49a2-9e88-b1d968bc9672",
+              "name": "pushName",
+              "value": "={{ $json.body.data.pushName }}",
+              "type": "string"
+            },
+            {
+              "id": "d30c92fa-8cb8-4af5-b73e-132b5bfdfe9e",
+              "name": "message_id",
+              "value": "={{ $json.body.data.key.id }}",
+              "type": "string"
+            },
+            {
+              "id": "c2af153a-b84b-48a1-9bca-39fc3bbd01e1",
+              "name": "conversation",
+              "value": "={{ $json.body.data.message.conversation }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -60,
+        -40
+      ],
+      "id": "bfa885b0-52d8-498c-8729-3ecd27b443b4",
+      "name": "Edit Fields"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "all",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "workflows.aimaze.com.br",
+            "user-agent": "axios/1.7.9",
+            "content-length": "879",
+            "accept-encoding": "gzip, compress, deflate, br",
+            "content-type": "application/json",
+            "x-forwarded-for": "178.156.151.68",
+            "x-forwarded-host": "workflows.aimaze.com.br",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik_traefik.1",
+            "x-real-ip": "178.156.151.68"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "event": "messages.upsert",
+            "instance": "aimaze",
+            "data": {
+              "key": {
+                "remoteJid": "553899225622@s.whatsapp.net",
+                "fromMe": false,
+                "id": "3A2F744DE3BE68CAF3ED"
+              },
+              "pushName": "João Reis",
+              "status": "DELIVERY_ACK",
+              "message": {
+                "conversation": "oi",
+                "messageContextInfo": {
+                  "deviceListMetadata": {
+                    "senderKeyHash": "jb0MD/Ii+xeV5Q==",
+                    "senderTimestamp": "1745629647",
+                    "recipientKeyHash": "5aKSqcqaQPmxig==",
+                    "recipientTimestamp": "1744650225"
+                  },
+                  "deviceListMetadataVersion": 2,
+                  "messageSecret": "LrbxFZF1nFCm5+lXAO1hIZrvv5pacPsKv94sQoXfrHk="
+                }
+              },
+              "messageType": "conversation",
+              "messageTimestamp": 1746371511,
+              "instanceId": "0d2743da-178c-41ea-a451-387c6dcd81b1",
+              "source": "ios"
+            },
+            "destination": "https://workflows.aimaze.com.br/webhook/pixeomachine",
+            "date_time": "2025-05-04T12:11:52.060Z",
+            "sender": "553187712022@s.whatsapp.net",
+            "server_url": "https://wsapi.clindermy.aimaze.com.br",
+            "apikey": "C20C6E36A318-4F67-9204-89A641D4A789"
+          },
+          "webhookUrl": "https://webhooks.aimaze.com.br/webhook/pixeomachine",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "versionId": "969a2ce5-c7f6-487c-8404-73b32fd53a01",
+  "triggerCount": 1,
+  "tags": []
+}
