@@ -1,0 +1,376 @@
+{
+  "createdAt": "2025-03-06T17:39:34.524Z",
+  "updatedAt": "2025-03-18T14:32:34.968Z",
+  "id": "bigoEIxGxyfKii4j",
+  "name": "My workflow 3",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -420
+      ],
+      "id": "15a4778d-bb1c-40b7-80fa-f19adae6641f",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "filters": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        440,
+        -420
+      ],
+      "id": "10013756-f8f0-4f8a-bda6-f68bdb42653d",
+      "name": "n8n",
+      "credentials": {
+        "n8nApi": {
+          "id": "YcCnSNvusbWcGTpD",
+          "name": "[workflows.aimaze.com.br] - joao@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "={{ $('Edit Fields').item.json.owner }}",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $('Edit Fields').item.json.repository }}",
+          "mode": "name"
+        },
+        "filePath": "=aimaze-machine/{{ $json.id }}.json",
+        "additionalParameters": {}
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        660,
+        -520
+      ],
+      "id": "1c7e26ba-030e-41bb-8997-51144c5b865a",
+      "name": "GitHub",
+      "credentials": {
+        "githubOAuth2Api": {
+          "id": "csIRPiHxHkuSEveU",
+          "name": "[github.com] - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c49b6aaa-0dca-4f01-b6e5-412c8f8cfef5",
+              "name": "owner",
+              "value": "aimazepro",
+              "type": "string"
+            },
+            {
+              "id": "ca9ba4bc-32d0-4a04-ad8d-43fb973fbbb6",
+              "name": "repository",
+              "value": "aimaze-machine",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        -420
+      ],
+      "id": "58d95cc8-7ce1-4947-a8f6-a8ef80696874",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "46532312-ea81-4267-bca8-4d8ce349e9d6",
+              "name": "data",
+              "value": "={{ $json }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        660,
+        -340
+      ],
+      "id": "dc54dbc3-f1ac-4d99-9072-9cabecd5d6b5",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "={{ $('Edit Fields').item.json.owner }}",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $('Edit Fields').item.json.repository }}",
+          "mode": "name"
+        },
+        "filePath": "=aimaze-machine/{{ $('n8n').item.json.id }}.json",
+        "binaryData": true,
+        "commitMessage": "={{ $('n8n').item.json.name }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        1880,
+        -320
+      ],
+      "id": "c8de6165-a5bb-4a34-9345-17657ace744c",
+      "name": "GitHub1",
+      "credentials": {
+        "githubOAuth2Api": {
+          "id": "csIRPiHxHkuSEveU",
+          "name": "[github.com] - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "mode": "each",
+        "options": {
+          "format": true,
+          "fileName": "={{ $json.id }}.json"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1720,
+        -320
+      ],
+      "id": "8ef19d48-bfa2-41f5-8472-4e13044f3510",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "operation": "fromJson",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        880,
+        -520
+      ],
+      "id": "4e3ed259-7f8b-470b-97fe-efba5de16466",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "data.id",
+              "field2": "data.id"
+            }
+          ]
+        },
+        "resolve": "preferInput2",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.compareDatasets",
+      "typeVersion": 2.3,
+      "position": [
+        1120,
+        -380
+      ],
+      "id": "8d1f4ac7-ed79-4916-b03b-aa9b1b13441b",
+      "name": "Compare Datasets"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ $json.data }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1560,
+        -320
+      ],
+      "id": "589b7cff-85f5-4800-b3a2-8b11b8ff4b13",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4a902c86-a806-4577-b5dc-9661214ef785",
+              "name": "data",
+              "value": "={{ $json.data }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1560,
+        -700
+      ],
+      "id": "22243168-7a9e-4eb5-b8a7-c84431108882",
+      "name": "Edit Fields3"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8n": {
+      "main": [
+        [
+          {
+            "node": "GitHub",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "n8n",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Compare Datasets",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "GitHub": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "GitHub1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Compare Datasets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compare Datasets": {
+      "main": [
+        [],
+        [],
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "d72805c5-962e-4b33-aafe-95099a8568e1",
+  "triggerCount": 0,
+  "tags": []
+}
