@@ -1,0 +1,164 @@
+{
+  "createdAt": "2025-04-20T13:28:49.191Z",
+  "updatedAt": "2025-04-20T13:33:22.747Z",
+  "id": "pK8s3SZxzV4qm5iu",
+  "name": "encerrar_conversa",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "fone_number"
+            },
+            {
+              "name": "horario_marcado"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -260,
+        -40
+      ],
+      "id": "d934b031-bad7-4903-a89a-a33d91e0422d",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "databaseId": 168854,
+        "tableId": 418625,
+        "returnAll": true,
+        "additionalOptions": {
+          "filters": {
+            "fields": [
+              {
+                "field": 3210935,
+                "value": "={{ $json.fone_number }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        -40
+      ],
+      "id": "549ea80b-103a-4477-908f-c51afcfb1778",
+      "name": "Baserow7",
+      "credentials": {
+        "baserowApi": {
+          "id": "jODihG7gncUc7khv",
+          "name": "[baserow.io] - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "databaseId": 168854,
+        "tableId": 418625,
+        "rowId": "={{ $json.id }}",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": 3994504,
+              "fieldValue": "true"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        180,
+        -40
+      ],
+      "id": "6e8e5db8-936c-4baf-bbd8-7c53cd6b676a",
+      "name": "Baserow8",
+      "credentials": {
+        "baserowApi": {
+          "id": "jODihG7gncUc7khv",
+          "name": "[baserow.io] - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n\"response\": \"Atendimento encerrado. Muito obrigado, qualquer dúvida estou a disposição.\"\n}\n ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        400,
+        -40
+      ],
+      "id": "971d6da3-59b2-4432-915c-4630a88dfdb6",
+      "name": "output12"
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Baserow7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baserow7": {
+      "main": [
+        [
+          {
+            "node": "Baserow8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baserow8": {
+      "main": [
+        [
+          {
+            "node": "output12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "all",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "start_datetime": "2025-04-22T08:00:00",
+          "end_datetime": "2025-04-22T19:00:00"
+        }
+      }
+    ]
+  },
+  "versionId": "e38651c3-5151-42d8-a1ed-f12c4ee0af17",
+  "triggerCount": 0,
+  "tags": []
+}
