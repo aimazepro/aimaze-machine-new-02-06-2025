@@ -1,0 +1,380 @@
+{
+  "createdAt": "2025-05-05T13:25:35.277Z",
+  "updatedAt": "2025-05-05T13:25:35.277Z",
+  "id": "fjgXOvwx4OD6lH1a",
+  "name": "INTERROMPE ATENDIMENTO DA IA versão principal",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "4e83b920-af5e-4bf0-a4ba-2ab5f3bed319",
+        "options": {}
+      },
+      "id": "0431c314-d7f7-4628-b68a-63c1852ebbf6",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        -100
+      ],
+      "webhookId": "4e83b920-af5e-4bf0-a4ba-2ab5f3bed319"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e527fa77-d28a-40d7-968d-240244fad290",
+              "name": "user",
+              "value": "={{ $json.body.data.key.remoteJid }}",
+              "type": "string"
+            },
+            {
+              "id": "196178c7-428f-4659-a151-4e3e9a92abfe",
+              "name": "mensagem",
+              "value": "={{ $json.body.data.message.conversation }}",
+              "type": "string"
+            },
+            {
+              "id": "65caa246-e113-43f3-9262-94cd42af7c36",
+              "name": "message.event",
+              "value": "={{ $json.body.data.key.fromMe? 'outcoming' : 'incoming' }}",
+              "type": "string"
+            },
+            {
+              "id": "db64a615-c9aa-48f1-8802-89ccfcd0ddf4",
+              "name": "instance.name",
+              "value": "={{ $json.body.instance }}",
+              "type": "string"
+            },
+            {
+              "id": "b88e7b97-4f27-43f5-9a30-bb84b49e8c22",
+              "name": "instanceId",
+              "value": "={{ $json.body.data.instanceId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        -100
+      ],
+      "id": "651736f7-208b-4b63-bef6-c26056cc490d",
+      "name": "Normalização"
+    },
+    {
+      "parameters": {
+        "operation": "set",
+        "key": "={{ $('Normalização').item.json.user }}_block",
+        "value": "true",
+        "expire": true,
+        "ttl": 900
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        660,
+        -200
+      ],
+      "id": "7ae54149-0672-44bc-8ea8-0fc08a5fb0d6",
+      "name": "block IA",
+      "credentials": {
+        "redis": {
+          "id": "d4AxnEWEdF6ojBXg",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.event }}",
+                    "rightValue": "outcoming",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "0185e09f-7d53-4b94-ad47-bf4028b9f78f"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "outcoming"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d6dc8354-ab60-44ff-b8ee-84a44983e37b",
+                    "leftValue": "={{ $json.message.event }}",
+                    "rightValue": "incoming",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "incoming"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        440,
+        -100
+      ],
+      "id": "fe332a44-71e0-4a09-9090-23bba75fd183",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "block",
+        "key": "={{ $('Normalização').item.json.user }}_block",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        660,
+        0
+      ],
+      "id": "4e8d19f9-be8f-4a93-b547-c42832232f98",
+      "name": "block IA1",
+      "credentials": {
+        "redis": {
+          "id": "d4AxnEWEdF6ojBXg",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.block }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "empty",
+                      "singleValue": true
+                    },
+                    "id": "b6b6e3df-8385-4514-a462-c9f22d271436"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "IA PODE RESPONDER"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d985fdf5-0ede-4673-994d-734154600b3e",
+                    "leftValue": "={{ $json.block }}",
+                    "rightValue": "true",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "IA NÃO PODE RESPONDER"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        880,
+        0
+      ],
+      "id": "ff5dbab9-2d40-4f16-9c2c-1190b3dae1a8",
+      "name": "Switch1"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Normalização",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalização": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "block IA",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "block IA1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "block IA1": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "block IA": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "all",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "workflows.aimaze.com.br",
+            "user-agent": "axios/1.7.9",
+            "content-length": "880",
+            "accept-encoding": "gzip, compress, deflate, br",
+            "content-type": "application/json",
+            "x-forwarded-for": "178.156.151.68",
+            "x-forwarded-host": "workflows.aimaze.com.br",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik_traefik.1",
+            "x-real-ip": "178.156.151.68"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "event": "messages.upsert",
+            "instance": "aimaze",
+            "data": {
+              "key": {
+                "remoteJid": "553899225622@s.whatsapp.net",
+                "fromMe": true,
+                "id": "3AE4160A5E5276BF4E6C"
+              },
+              "pushName": "João Reis",
+              "status": "DELIVERY_ACK",
+              "message": {
+                "conversation": "ola",
+                "messageContextInfo": {
+                  "deviceListMetadata": {
+                    "senderKeyHash": "jb0MD/Ii+xeV5Q==",
+                    "senderTimestamp": "1745629647",
+                    "recipientKeyHash": "5aKSqcqaQPmxig==",
+                    "recipientTimestamp": "1744650225"
+                  },
+                  "deviceListMetadataVersion": 2,
+                  "messageSecret": "24cq3PFAWzo/RBiZXihVxKRr2dcZOoK6gr/6hFfREBk="
+                }
+              },
+              "messageType": "conversation",
+              "messageTimestamp": 1746372321,
+              "instanceId": "0d2743da-178c-41ea-a451-387c6dcd81b1",
+              "source": "ios"
+            },
+            "destination": "https://workflows.aimaze.com.br/webhook/pixeomachine",
+            "date_time": "2025-05-04T12:25:21.795Z",
+            "sender": "553187712022@s.whatsapp.net",
+            "server_url": "https://wsapi.clindermy.aimaze.com.br",
+            "apikey": "C20C6E36A318-4F67-9204-89A641D4A789"
+          },
+          "webhookUrl": "https://webhooks.aimaze.com.br/webhook/pixeomachine",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "versionId": "0cf9a875-7701-4953-a96e-cd1df9e823f4",
+  "triggerCount": 1,
+  "tags": []
+}
