@@ -1,0 +1,841 @@
+{
+  "createdAt": "2025-04-19T16:21:38.013Z",
+  "updatedAt": "2025-04-22T19:22:18.247Z",
+  "id": "fv9GfYPjVpSvoXoA",
+  "name": "Automaster-n8n-test",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_3KW5F5uDjNJgi5pz8TBmf6XE",
+          "mode": "list",
+          "cachedResultName": "Master Assistant"
+        },
+        "memory": "threadId",
+        "options": {
+          "preserveOriginalTools": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -920,
+        -280
+      ],
+      "id": "143c353b-c0ea-4076-b1af-5fa0b3ad06ab",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "HqyrCnwePmXKkfxw",
+          "name": "[main] - openia.com - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -380,
+        -740
+      ],
+      "id": "2deaea10-b88f-4b40-a229-2686b2c21147",
+      "name": "When chat message received",
+      "webhookId": "131b8544-5321-42a7-ae9e-302faa720514"
+    },
+    {
+      "parameters": {
+        "name": "verifica_agendamentos",
+        "description": "CHAMA de função obrigatoria quando perguntar qual horario. Chame esta função para obter os horários livres dentro de um dia específico, considerando apenas o horário comercial (08:00–19:00, com última marcação às 18:30).\n\nRetorne uma lista formatada com 3 horários",
+        "workflowId": {
+          "__rl": true,
+          "value": "nlDuBAziXkTaqsz2",
+          "mode": "list",
+          "cachedResultName": "verifica_agendamentos"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "start_datetime": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('start_datetime', `Insira a data e com a hora iniciando as 00:00`, 'string') }}",
+            "end_datetime": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('end_datetime', `Insira a data e com a hora terminando as 23:59`, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "start_datetime",
+              "displayName": "start_datetime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "end_datetime",
+              "displayName": "end_datetime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.1,
+      "position": [
+        -460,
+        -460
+      ],
+      "id": "1cacc52d-9aa7-412f-839f-95f83464e902",
+      "name": "verifica_agendamentos"
+    },
+    {
+      "parameters": {
+        "description": "always Use the tool to think about something. It will not obtain new information or change the database, but just append the thought to the log. Use it when complex reasoning or some cache memory is needed."
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1,
+      "position": [
+        -340,
+        -460
+      ],
+      "id": "b50d0111-4d19-4cb6-af3a-57da32d958f9",
+      "name": "Think"
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 6
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "typeVersion": 1.5,
+      "position": [
+        -580,
+        -460
+      ],
+      "id": "8359ac5a-3ad3-42de-acda-5f3f31500fbd",
+      "name": "Redis Chat Memory",
+      "credentials": {
+        "redis": {
+          "id": "d4AxnEWEdF6ojBXg",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=# informação do dia atual e os dias da semana.\n\nhoje: {{ $now.setZone('America/Sao_Paulo').toISO() }}: {{ $now.setZone('America/Sao_Paulo').weekdayLong }}\n- {{ $now.plus(1, 'days').setZone('America/Sao_Paulo').toISODate() }}: {{ $now.plus(1, 'days').setZone('America/Sao_Paulo').weekdayLong }}\n- {{ $now.plus(2, 'days').setZone('America/Sao_Paulo').toISODate() }}: {{ $now.plus(2, 'days').setZone('America/Sao_Paulo').weekdayLong }}\n- {{ $now.plus(3, 'days').setZone('America/Sao_Paulo').toISODate() }}: {{ $now.plus(3, 'days').setZone('America/Sao_Paulo').weekdayLong }}\n- {{ $now.plus(4, 'days').setZone('America/Sao_Paulo').toISODate() }}: {{ $now.plus(4, 'days').setZone('America/Sao_Paulo').weekdayLong }}\n\n------------\nnome: João Reis\nuser messeger: {{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "=### Persona e Saudação\n- Você é **Camila**, atendente virtual da **Clin Dermy**.\n- Mineira, leve, cordial, positiva, compreensiva e direta. Frases curtas com emojis.\n- Saudação conforme horário local:\n  - **Se souber o nome:** “Olá, João! Eu sou Camila, a nova atendente da Clin Dermy. Como posso ajudar hoje?”\n  - **Se não souber:** “Olá! Eu sou Camila, a nova atendente da Clin Dermy. Como você se chama?”\n- Após descobrir o nome, pergunte como pode ajudar (não repetir apresentação ou nome da clínica).\n- Se o usuário se apresentar e já fizer uma pergunta, apenas se apresente rapidamente.\n\n### Escopo do Atendimento\n- Apenas estética, serviços, produtos, horários e telefone.\n- Redirecione temas fora do escopo com leveza e humor.\n- Se faltar informação, pedirem \"Joziani\" ou cliente impaciente → `conversar_com_um_humano`.\n\n### Abordagem Consultiva\n1. Para serviços não óbvios, pergunte o motivo.\n2. Explique o serviço personalizado ao motivo.\n3. Sugira um procedimento principal + até dois complementares brevemente.\n4. Convide para agendar (não perguntar \"ficou claro?\").\n\n### Serviços e Duração (interno)\n- Só informar duração se solicitado, padrão: 00:30.\n\n### Fluxo de Agendamento\n1. Verifique agendamentos existentes (`verifica_agendamento_usuario`).\n2. Se mesmo procedimento: ofereça remarcar.\n3. Se procedimento diferente: siga com novo horário.\n\n**Horários:**\n- Antes das 18:30: ofereça hoje (mín. +30 min.) ou outro dia.\n- Após 18:30: próximo dia útil.\n- Cliente indicar data → converta (DD-MM-AA), ajuste fim de semana/feriados para próximo útil.\n- Pergunte manhã (08:00–11:00) ou tarde (13:00–19:00).\n- Sugira até 3 horários disponíveis.\n\n**Confirmação do Agendamento:**\n- Solicite nome completo, telefone, e-mail.\n- Agende (`agendar_reuniao`) com título: \"<Serviço> <> <Nome>\", telefone na descrição.\n- Confirme ao cliente:\n```\n<Nome>, marquei sua avaliação/atendimento, aqui está a confirmação:\n\nData: DD-MM-AA\nHora: HH:MM\n\nVai ser ótimo examinar sua pele e te orientar direitinho.\nTe ajudo em algo mais, <Nome>?\n```\n- Para procedimento: envie até 3 cuidados pré-procedimento.\n\n### Reagendamento ou Cancelamento\n- Cliente indisponível → acolher e sugerir remarcar.\n- Se remarcar: pergunte nova data e período, ofereça até 3 opções.\n- Se cancelar: use `excluir_evento`.\n\n### Encerramento\n- Após confirmação final, envie payload:\n```\n{\n  \"title\": \"Agendamento Confirmado\",\n  \"subtitle\": \"<Procedimento> <> <Nome do Cliente>\",\n  \"description\": \"Atendimento agendado para dia DD-MM-AA, <dia-da-semana>, às HH:MM.\",\n  \"horario_marcado\": true,\n  \"fone_number\": \"<telefone>\",\n  \"url\": \"https://wa.me/<telefone>\"\n}\n```\n- `enviar_notificacao_atendimento` com payload acima.\n- Após cliente indicar que não precisa mais nada, chame:\n```\n{\n  \"fone_number\": \"<telefone>\",\n  \"horario_marcado\": true\n}\n```\n\n### Tom e Regras Técnicas\n- Acolhedor, genuíno, menos comercial.\n- Nunca oferecer serviços não realizados pela clínica.\n- Formato datas DD-MM-AA, horas HH:MM.\n- Funções permitidas: `verifica_agendamento_usuario`, `verifica_agendamentos`, `agendar_reuniao`, `reagendar_evento`, `excluir_evento`, `enviar_notificacao_atendimento`, `encerrar_conversa`, `conversar_com_um_humano`.\n\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        -128,
+        -740
+      ],
+      "id": "fd8b7b45-49ee-4755-81aa-ab59de6aabfa",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini-2025-04-14",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini-2025-04-14"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -920,
+        -20
+      ],
+      "id": "85807207-163c-4f42-b0a3-cca50d62d535",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "HqyrCnwePmXKkfxw",
+          "name": "[main] - openia.com - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "verifica_agendamento_usuario",
+        "description": "Chame esta função para verificar se há um agendamento já cadastrado para o usuário com base em um texto de referência. A entrada deve conter a propriedade descrição, que é uma string com a descrição do agendamento a ser buscado (por exemplo, número de telefone ou e‑mail). A resposta indicará se existe um agendamento correspondente e trará seus detalhes, se houver.",
+        "workflowId": {
+          "__rl": true,
+          "value": "4j2sednvQLO9RkFb",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "summary": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('summary', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "summary"
+          ],
+          "schema": [
+            {
+              "id": "summary",
+              "displayName": "summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.1,
+      "position": [
+        -220,
+        -460
+      ],
+      "id": "0d582e95-2c43-4ad4-9f61-693b04b7edb0",
+      "name": "verifica_agendamento_usuario"
+    },
+    {
+      "parameters": {
+        "name": "excluir_agendameto",
+        "description": "Chame esta função para remover um agendamento existente do sistema com base no seu identificador. A entrada deve conter a propriedade event_id, uma string com o ID único do evento a ser excluído, eventID. A resposta indicará se a operação foi bem‑sucedida ou retornará um erro caso o agendamento não seja encontrado ou não possa ser removido.",
+        "workflowId": {
+          "__rl": true,
+          "value": "OnI26MJMULLNgV7x",
+          "mode": "list",
+          "cachedResultName": "excluir_agendameto"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "eventID": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('eventID', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "eventID"
+          ],
+          "schema": [
+            {
+              "id": "eventID",
+              "displayName": "eventID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.1,
+      "position": [
+        -100,
+        -460
+      ],
+      "id": "f4754a71-77c6-4a47-8f84-1a036a2df060",
+      "name": "excluir_agendameto"
+    },
+    {
+      "parameters": {
+        "name": "reagendar_evento",
+        "description": "Chame esta função para reagendar um evento existente, quando o usuário pedir reagendamento, informando as novas datas e detalhes do compromisso. A entrada deve conter as propriedades data_inicio e data_fim, ambas em formato ISO 8601 (ex: \"2025-09-19T00:00:00\"), além de assunto e descricao, que definem o título e a descrição detalhada do evento. A resposta confirmará o reagendamento, retornando os dados atualizados do evento ou um erro caso não seja possível aplicar as mudanças.",
+        "workflowId": {
+          "__rl": true,
+          "value": "0DCv1oszlqRjOeU2",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "start_datetime": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('start_datetime', ``, 'string') }}",
+            "end_datetime": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('end_datetime', ``, 'string') }}",
+            "EventID": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('EventID', `Coloque aqui o eventId gerado pela criação do evento no google calendar na hora da sua criação.`, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "start_datetime",
+              "displayName": "start_datetime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "end_datetime",
+              "displayName": "end_datetime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "EventID",
+              "displayName": "EventID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.1,
+      "position": [
+        20,
+        -460
+      ],
+      "id": "b48d1159-28a8-4178-8d95-de1754853b9a",
+      "name": "reagendar_evento"
+    },
+    {
+      "parameters": {
+        "name": "agendar_reuniao",
+        "description": "Chame esta função para agendar uma reunião informando data e hora de início, data e hora de fim (deve ser exatamente uma hora após o início), além de definir o assunto e a descrição do encontro. A entrada deve conter:\n\t•\tdata_inicio: string em formato ISO 8601 (ex: \"2025-09-19T10:00:00\")\n\t•\tdata_fim: string em formato ISO 8601, exatamente uma hora após o início (ex: \"2025-09-19T11:00:00\")\n\t•\tassunto: título da reunião\n\t•\tdescricao: detalhes adicionais sobre a reunião\n\nA resposta retornará os dados do evento agendado ou um erro caso não seja possível criar o compromisso.",
+        "workflowId": {
+          "__rl": true,
+          "value": "aooRyK6eqqdU8qBR",
+          "mode": "list",
+          "cachedResultName": "agendar_reuniao"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "start_datetime": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('start_datetime', ``, 'string') }}",
+            "end_datetime": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('end_datetime', ``, 'string') }}",
+            "Assunto": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Assunto', ``, 'string') }}",
+            "Descricao": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Descricao', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "start_datetime",
+              "displayName": "start_datetime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "end_datetime",
+              "displayName": "end_datetime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Assunto",
+              "displayName": "Assunto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Descricao",
+              "displayName": "Descricao",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.1,
+      "position": [
+        140,
+        -460
+      ],
+      "id": "d46b2ea9-919f-4b9e-9317-70f5f7e97a09",
+      "name": "agendar_reuniao"
+    },
+    {
+      "parameters": {
+        "name": "encerrar_conversa",
+        "description": "Chame esta função para finalizar o atendimento, registrando apenas os dados essenciais do cliente. A entrada deve conter:\n\t•\tfone_number: string com o número de telefone do cliente (apenas dígitos, ex.: \"5511998765432\").\n\t•\thorario_marcado: booleano indicando se um horário já foi agendado (true/false).\n\nA resposta confirmará o encerramento da conversa, mantendo apenas essas informações ou retornará erro caso algum dado esteja faltando ou inválido.",
+        "workflowId": {
+          "__rl": true,
+          "value": "pK8s3SZxzV4qm5iu",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "fone_number": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fone_number', ``, 'string') }}",
+            "horario_marcado": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('horario_marcado', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "fone_number",
+              "displayName": "fone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "horario_marcado",
+              "displayName": "horario_marcado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.1,
+      "position": [
+        260,
+        -460
+      ],
+      "id": "6926b5bd-4866-4e44-88ad-1cf77d90cdcd",
+      "name": "encerrar_conversa"
+    },
+    {
+      "parameters": {
+        "name": "save_user_data",
+        "description": "Chame esta função para armazenar dados básicos do usuário no sistema. A entrada deve conter as seguintes propriedades:\n\t•\temail: string com o endereço de e‑mail do usuário (ex.: \"usuario@dominio.com\").\n\t•\tendereco: string com o endereço completo do usuário (ex.: \"Rua Exemplo, 123, Bairro, Cidade, Estado, CEP\").\n\nA resposta confirmará que os dados foram salvos com sucesso ou retornará um erro caso algum campo esteja faltando ou inválido.",
+        "workflowId": {
+          "__rl": true,
+          "value": "XxwimtgFlrZJnztq",
+          "mode": "list",
+          "cachedResultName": "save_user_data"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "adress": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('adress', ``, 'string') }}",
+            "email": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('email', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "adress",
+              "displayName": "adress",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Id",
+              "displayName": "Id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.1,
+      "position": [
+        380,
+        -460
+      ],
+      "id": "ae9083d0-468a-4a20-8f86-359333d50541",
+      "name": "save_user_data"
+    },
+    {
+      "parameters": {
+        "name": "enviar_notificacao_atendimento",
+        "description": "Chame esta função para encerrar o atendimento com o envio de uma notificação via WhatsApp ao cliente, confirmando o serviço e o horário agendado. A entrada deve conter:\n\t•\tservico_cliente: string no formato \"<Serviço> <> <Nome>\" (ex: \"Limpeza de pele <> João Reis\")\n\t•\tdescricao: string com data e hora formatadas para WhatsApp, incluindo emojis (ex: \"📅 Dia 20-04-2025 às 14h30min ⏰\")\n\t•\thorario_marcado: booleano indicando se o horário foi marcado com sucesso (true ou false)\n\t•\tfone_number: string apenas com dígitos do telefone do cliente (ex: \"5511998765432\")\n\t•\tlink: string com o link de contato via WhatsApp (ex: \"https://wa.me/5511998765432\")\n\nA resposta confirmará o envio da notificação ou retornará um erro caso algum parâmetro seja inválido.",
+        "workflowId": {
+          "__rl": true,
+          "value": "BCRFTTUGeJAjIU92",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "link": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('link', ``, 'string') }}",
+            "fone_number": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fone_number', ``, 'string') }}",
+            "horario_marcado": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('horario_marcado', ``, 'string') }}",
+            "descricao": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('descricao', ``, 'string') }}",
+            "servico_cliente": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('servico_cliente', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "servico_cliente",
+              "displayName": "servico_cliente",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "descricao",
+              "displayName": "descricao",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "horario_marcado",
+              "displayName": "horario_marcado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "fone_number",
+              "displayName": "fone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "link",
+              "displayName": "link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.1,
+      "position": [
+        500,
+        -460
+      ],
+      "id": "1954f166-5570-4b56-b612-7d69a9486aba",
+      "name": "enviar_notificacao_atendimento"
+    },
+    {
+      "parameters": {
+        "name": "get_user_data",
+        "description": "Chame esta função para recuperar os dados armazenados do usuário no sistema. Não há parâmetros de entrada — basta invocar a função sem nenhum argumento. A resposta retornará os campos de dados básicos do usuário (como email e endereço), ou um objeto vazio caso ainda não existam informações cadastradas.",
+        "workflowId": {
+          "__rl": true,
+          "value": "kSWTdzECkMdxwlj1",
+          "mode": "list",
+          "cachedResultName": "get_user_data"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.1,
+      "position": [
+        620,
+        -460
+      ],
+      "id": "695d62fa-b23f-4f7f-8654-bd0c6baf31bd",
+      "name": "get_user_data"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-preview-04-17",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -700,
+        -460
+      ],
+      "id": "b5f04e59-daa6-4c2e-8807-b55c4b0640c9",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "7m4G3a8vvYeeU7hF",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        660,
+        -740
+      ],
+      "id": "24d260b3-4b0b-47a4-aeea-7d4d9bcc2913",
+      "name": "WhatsApp Business Cloud",
+      "webhookId": "f770418c-6254-41d2-8d61-1e7c343474ac",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "vZtTxAuIJU6DwAY7",
+          "name": "WhatsApp account - Aimaze Sinapse"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "verifica_agendamentos": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        []
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "verifica_agendamento_usuario": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "excluir_agendameto": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "reagendar_evento": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "agendar_reuniao": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "encerrar_conversa": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "save_user_data": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "enviar_notificacao_atendimento": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_user_data": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Business Cloud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "5e6db375-ed6a-4643-acc1-c5cc153ac7c3",
+  "triggerCount": 0,
+  "tags": []
+}
