@@ -1,0 +1,99 @@
+{
+  "createdAt": "2025-03-18T19:47:50.614Z",
+  "updatedAt": "2025-03-18T19:58:58.852Z",
+  "id": "sJO8rh89adVo1Sua",
+  "name": "Notificação hetrixtools - Servidor VPS Hetzner",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "path": "hetrixtools",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "2751c2e0-ae8e-4c15-9891-40177be5caab",
+      "name": "Webhook",
+      "webhookId": "1e900210-2c2b-490f-9ca5-a08732dd75a1"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "webhooks.aimaze.com.br",
+            "content-length": "579",
+            "accept-encoding": "gzip",
+            "cdn-loop": "cloudflare; loops=1; subreqs=1",
+            "cf-connecting-ip": "2a06:98c0:3600::103",
+            "cf-ew-via": "15",
+            "cf-ray": "9227422c16595479-YYZ",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-worker": "hetrix.workers.dev",
+            "content-type": "application/json",
+            "x-forwarded-for": "108.162.241.13",
+            "x-forwarded-host": "webhooks.aimaze.com.br",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik_traefik.1",
+            "x-real-ip": "108.162.241.13"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "monitor_id": "ThisWillBeTheMonitorID32CharLong",
+            "monitor_name": "Test Monitor Label",
+            "monitor_target": "http://this-is-a-test.com/",
+            "monitor_type": "website",
+            "monitor_category": "Test Category",
+            "monitor_status": "offline",
+            "timestamp": 1742327419,
+            "monitor_errors": {
+              "New York": "http code 403",
+              "San Francisco": "http code 403",
+              "Dallas": "timeout",
+              "Amsterdam": "http code 403",
+              "London": "http code 403",
+              "Frankfurt": "http code 403",
+              "Singapore": "timeout",
+              "Sydney": "http code 403",
+              "Sao Paulo": "http code 403",
+              "Tokyo": "keyword not found",
+              "Mumbai": "http code 403",
+              "Warsaw": "keyword not found"
+            }
+          },
+          "webhookUrl": "https://webhooks.aimaze.com.br/webhook/hetrixtools",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "versionId": "376ebd69-4222-43e0-b361-72de3032aef5",
+  "triggerCount": 1,
+  "tags": []
+}
