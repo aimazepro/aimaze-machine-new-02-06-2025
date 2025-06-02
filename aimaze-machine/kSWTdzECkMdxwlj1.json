@@ -1,0 +1,121 @@
+{
+  "createdAt": "2025-04-20T13:46:57.086Z",
+  "updatedAt": "2025-04-20T13:47:56.140Z",
+  "id": "kSWTdzECkMdxwlj1",
+  "name": "get_user_data",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "id"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -260,
+        -40
+      ],
+      "id": "9117b439-f84e-4038-8f85-c56a71afff06",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "databaseId": 168854,
+        "tableId": 418669,
+        "returnAll": true,
+        "additionalOptions": {
+          "filters": {
+            "fields": [
+              {
+                "field": 3211226,
+                "operator": "contains",
+                "value": "={{ $json.arguments.category }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        -40
+      ],
+      "id": "1820a1fe-4482-4366-8563-984ba965f863",
+      "name": "Baserow1",
+      "credentials": {
+        "baserowApi": {
+          "id": "jODihG7gncUc7khv",
+          "name": "[baserow.io] - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"response\": \"name: {{ $json.Name }}, category: {{ $json.Category.value }}, author: {{ $json.author }}, price: {{ $json.price }}, media_url: {{ $json.URL }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        180,
+        -40
+      ],
+      "id": "845fc8d9-56e0-4df2-bf9a-006cf4a35641",
+      "name": "Prepara outpoot"
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Baserow1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baserow1": {
+      "main": [
+        [
+          {
+            "node": "Prepara outpoot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "all",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "start_datetime": "2025-04-22T08:00:00",
+          "end_datetime": "2025-04-22T19:00:00"
+        }
+      }
+    ]
+  },
+  "versionId": "21bbf0b0-2450-4452-a46c-99d95f37965f",
+  "triggerCount": 0,
+  "tags": []
+}
