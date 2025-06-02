@@ -1,0 +1,18 @@
+{
+  "createdAt": "2025-05-04T15:14:26.252Z",
+  "updatedAt": "2025-05-04T15:14:26.252Z",
+  "id": "82mBoKRzFqABxd6i",
+  "name": "router",
+  "active": false,
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "1d5ec0cd-435e-439c-b407-14039fb04aa2",
+  "triggerCount": 0,
+  "tags": []
+}
