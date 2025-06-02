@@ -1,0 +1,69 @@
+{
+  "createdAt": "2025-03-19T15:43:09.327Z",
+  "updatedAt": "2025-03-19T17:56:06.006Z",
+  "id": "m8qLTAHmrhzlj2LX",
+  "name": "My workflow 4",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        0
+      ],
+      "id": "a1ae4d0b-5b75-4a02-83f4-dc65c97fab27",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "fromEmail": "tools@aimaze.com.br",
+        "toEmail": "joaoreiscefet@gmail.com",
+        "subject": "Teste de envio de email",
+        "emailFormat": "text",
+        "text": "Autenticação de teste.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "3e6240c9-a8b8-448d-a488-b8a6e7723531",
+      "name": "Send Email",
+      "webhookId": "f987cca5-cd1f-452e-925c-36d7d2dd6c3a",
+      "credentials": {
+        "smtp": {
+          "id": "TT1NYzvdu9Qx9uTX",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "ee598497-1a98-48dd-9264-c3ff5dd40508",
+  "triggerCount": 0,
+  "tags": []
+}
