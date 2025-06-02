@@ -1,0 +1,78 @@
+{
+  "createdAt": "2025-04-13T19:50:27.458Z",
+  "updatedAt": "2025-05-31T15:03:57.094Z",
+  "id": "2NGU4Wp04OSBieg4",
+  "name": "[RabbitMQ] - webhook clindermy",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "queue": "messages_clindermy",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rabbitmq",
+      "typeVersion": 1.1,
+      "position": [
+        200,
+        0
+      ],
+      "id": "b6884ab2-6096-4c32-8537-8eca824a5be1",
+      "name": "RabbitMQ",
+      "credentials": {
+        "rabbitmq": {
+          "id": "eFg67tlHOn6E75F4",
+          "name": "[fila.aimaze.com.br] - aimazelab"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "pixeomachine",
+        "options": {}
+      },
+      "id": "c388635e-7957-42e6-a493-7ede9bb28567",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "f153c146-4aaa-4aec-b658-8e7da950ffa4"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "RabbitMQ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "all",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "9f40fab5-d8ce-4f15-84ce-a57616186277",
+  "triggerCount": 1,
+  "tags": [
+    {
+      "createdAt": "2024-12-15T00:57:09.028Z",
+      "updatedAt": "2024-12-15T00:57:09.028Z",
+      "id": "xBEQEwAcHtPXbxaq",
+      "name": "rabbitMQ"
+    }
+  ]
+}
