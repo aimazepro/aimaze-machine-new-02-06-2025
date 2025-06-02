@@ -1,0 +1,75 @@
+{
+  "createdAt": "2025-03-06T16:37:39.959Z",
+  "updatedAt": "2025-03-06T16:37:39.959Z",
+  "id": "6gbLUGe9b3hwGoBx",
+  "name": "My workflow 2",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4e585523-feb0-445f-b70e-95c68d238967",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "phoneNumberId": "528363650367191",
+        "recipientPhoneNumber": "5538999225622",
+        "message": "você gostaria de aprovar essa arte ?",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double",
+            "approveLabel": "✓ postar",
+            "disapproveLabel": "✗ não postar"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "79caeb6f-839e-488e-8b0d-0f10d0a63329",
+      "name": "WhatsApp Business Cloud",
+      "webhookId": "9e9d14ef-2bc9-4663-8c36-ca930282cfe3",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "vZtTxAuIJU6DwAY7",
+          "name": "WhatsApp account - Aimaze Sinapse"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Business Cloud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "79a90414-764f-47af-a432-54cbea8b4686",
+  "triggerCount": 0,
+  "tags": []
+}
