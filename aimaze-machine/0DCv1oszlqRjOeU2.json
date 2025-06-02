@@ -1,0 +1,324 @@
+{
+  "createdAt": "2025-04-20T13:19:32.210Z",
+  "updatedAt": "2025-04-20T15:09:30.109Z",
+  "id": "0DCv1oszlqRjOeU2",
+  "name": "reagendar_evento",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "start_datetime"
+            },
+            {
+              "name": "end_datetime"
+            },
+            {
+              "name": "EventID"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -260,
+        -40
+      ],
+      "id": "f4ad17f4-8ac5-4307-ba97-3a5736ba8d0e",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9aefd0b5-d1ff-4d18-ada1-12162c5142d1",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "bb57fb9e-d810-4386-a8b1-51b1ebd28e13",
+              "name": "summary",
+              "value": "={{ $json.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "bb4b1f69-4eed-4e70-8f0b-3498b3ecda62",
+              "name": "description",
+              "value": "={{ $json.description }}",
+              "type": "string"
+            },
+            {
+              "id": "80427945-f73e-4654-ae2b-5a1d11e90784",
+              "name": "start",
+              "value": "={{ $json.start.dateTime }}",
+              "type": "string"
+            },
+            {
+              "id": "419d8b13-1e36-4c2e-b867-f61e95565ba5",
+              "name": "end",
+              "value": "={{ $json.end.dateTime }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        680,
+        -140
+      ],
+      "id": "2fb8473b-7760-4a3f-8075-8b91c34d834e",
+      "name": "Separa dados calendar4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a0fd740f-358f-46b2-8bbc-4f3c25ebf135",
+              "name": "=evento",
+              "value": "=id: {{ $json.id }}, data_comeco: {{ $json.start }}, data_fim: {{ $json.end }}. Titulo: {{ $json.summary }}. descricao: {{ $json.description }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        -140
+      ],
+      "id": "271d908d-dc29-4d39-9bfb-266d2d64066b",
+      "name": "Edit Fields8"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n\"response\": \"reagendado: O seu evento foi reagendado com sucesso {{ $json.evento }}\"\n}\n ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1340,
+        -140
+      ],
+      "id": "6d3a052d-2d43-4c25-b8f9-018afa9c177e",
+      "name": "output4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ff416a00-7729-4ef9-accb-b04329f96ca9",
+              "leftValue": "={{ $json.available }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        240,
+        -40
+      ],
+      "id": "8d45065e-d6cc-4f1a-91e1-33f7fcf6d057",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n\"response\": \"reagendamento: esse horário não está disponível,Fale que acabou de conferir e viu que nao estava disponível\"\n}\n ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1340,
+        60
+      ],
+      "id": "95a48fa1-5c01-410e-a422-6bab7e4fb168",
+      "name": "output5"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "calendar": {
+          "__rl": true,
+          "value": "aimazemachine@gmail.com",
+          "mode": "list",
+          "cachedResultName": "aimazemachine@gmail.com"
+        },
+        "eventId": "={{ $('When Executed by Another Workflow').item.json.EventID }}",
+        "updateFields": {
+          "end": "={{ $('When Executed by Another Workflow').item.json.end_datetime }}",
+          "start": "={{ $('When Executed by Another Workflow').item.json.start_datetime }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        460,
+        -140
+      ],
+      "id": "9654bbd4-2052-4802-952d-5108fbdf1d23",
+      "name": "Google Calendar10",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "Eqt8e2WwupPypoIC",
+          "name": "[calendar.google.com] - aimazemachine@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "calendar",
+        "calendar": {
+          "__rl": true,
+          "value": "aimazemachine@gmail.com",
+          "mode": "list",
+          "cachedResultName": "aimazemachine@gmail.com"
+        },
+        "timeMin": "={{ $json.start_datetime }}",
+        "timeMax": "={{ $json.end_datetime }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        20,
+        -40
+      ],
+      "id": "bd1f24d3-8595-4d4c-a46f-05f2ecf34393",
+      "name": "verifica_evento_individual",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "Eqt8e2WwupPypoIC",
+          "name": "[calendar.google.com] - aimazemachine@gmail.com"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "verifica_evento_individual",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Separa dados calendar4": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields8": {
+      "main": [
+        [
+          {
+            "node": "output4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Google Calendar10",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "output5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Calendar10": {
+      "main": [
+        [
+          {
+            "node": "Separa dados calendar4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "verifica_evento_individual": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "all",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "start_datetime": "2025-04-22T08:00:00",
+          "end_datetime": "2025-04-22T09:00:00",
+          "EventID": "limpeza de pele <> João Reis"
+        }
+      }
+    ]
+  },
+  "versionId": "413a0a9f-fdc7-4ea2-a53a-fc19ded8d03a",
+  "triggerCount": 0,
+  "tags": []
+}
