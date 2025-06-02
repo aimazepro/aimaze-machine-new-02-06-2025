@@ -1,0 +1,130 @@
+{
+  "createdAt": "2025-04-20T13:41:57.813Z",
+  "updatedAt": "2025-04-20T13:59:55.877Z",
+  "id": "XxwimtgFlrZJnztq",
+  "name": "save_user_data",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "adress"
+            },
+            {
+              "name": "email"
+            },
+            {
+              "name": "Id"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -260,
+        -40
+      ],
+      "id": "4640ca97-a444-4d79-b395-e4f13dcbd478",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "databaseId": 168854,
+        "tableId": 418625,
+        "rowId": "={{ $json.Id }}",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": 3214404,
+              "fieldValue": "={{ $json.adress }}"
+            },
+            {
+              "fieldId": 3884594,
+              "fieldValue": "={{ $json.email }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        -40
+      ],
+      "id": "7481bac3-2ebe-4c38-8d14-ce2721420cb5",
+      "name": "Baserow3",
+      "credentials": {
+        "baserowApi": {
+          "id": "jODihG7gncUc7khv",
+          "name": "[baserow.io] - tools@aimaze.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"response\": \"name: {{ $json.user_name }}, whatsapp: {{ $json.user_id }}, address:{{ $json.address }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        180,
+        -40
+      ],
+      "id": "3363648c-00b0-49a0-8faa-9e04474712ce",
+      "name": "Prepara outpoot1"
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Baserow3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baserow3": {
+      "main": [
+        [
+          {
+            "node": "Prepara outpoot1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "all",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "adress": "",
+          "email": "joao@pixeo.com.br",
+          "Id": null
+        }
+      }
+    ]
+  },
+  "versionId": "3ce6576c-9ef2-406a-a72b-38ee19383638",
+  "triggerCount": 0,
+  "tags": []
+}
